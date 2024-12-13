@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build-terain</title>
+    <link rel="stylesheet" href="./Css/input.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <header class="fixed text-sm border-b-[1px] border-gray-600">
+        <div class="container  grid grid-cols-[auto,1fr,auto] max-md:gap-2 max-md:grid-cols-1 max-md:justify-center items-center  py-4 px-3 text-gray-200">
+            <h2 class="text-[#6158CA] text-center">AmineFC</h2>
+            <ul class="flex justify-center gap-6 max-md:font-semibold max-md:gap-12 ">
+                <li><a href="./">Home</a></li>
+                <li><a href="./builder.html">Build</a></li>
+                <li><a href="./players.html">Players</a></li>
+            </ul>
+            <div class="flex items-center gap-5 max-md:hidden">
+                <button class="text-[#6158CA]  bg-white rounded-md px-3 py-1">Login</button>
+                <button class="bg-[#6158CA]  rounded-md px-3 py-1">Sign Up</button>
+                <div
+                    class="bg-[#262244] rounded-full border-[1px] border-[#6158CA] flex justify-center items-center h-8 w-8">
+                    <i class="fa-regular fa-moon"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="lc"></div>
+    <div class="rc"></div>
+    <!-- <section>
+        <div class="container px-5">
+            <div class="text-gray-400 pt-6">
+                <p>Home > Builder</p>
+                <h3>EA FC 25 Tactics & Formations</h3>
+                <p>Build Custom Tactics & Formations</p>
+            </div>
+            <div class="flex">
+                <div class="relative">
+                
+                </div>
+            </div>
+        </div>
+    </section> -->
+    <section class="mt-16">
+        <div class="container">
+            <div class="grid grid-cols-[1fr,30%] max-md:grid-cols-[1fr]">
+                <div id="ttparent" class="h-full grid ">
+                    <div class="tt flex relative">
+                        <div class="terain"></div>
+                        <h2 id="flabelfp" class="terainf text-5xl text-white absolute bottom-4 right-[16%]">4-4-2</h2>
+                        <div id="canvas" class="absolute h-[731px] w-[892px]"></div>
+                    </div>
+                  
+                    <div id="changement" class="max-md:z-[1] relative transition-all max-md:fixed max-md:h-[190px] overflow-y-auto bottom-0 right-0 left-0 mt-2 ">
+                        <div onclick="changementOpen(event)" isopned="true" class="absolute -top-3 left-0 flex justify-center right-0 p-2 rounded-full z-[105] rotate-180">
+                             <i id="iconchangement"
+                                    class="fa-solid fa-chevron-down text-white cursor-pointer transition-all"></i>
+                        </div>
+                        <div class="border-b-[1px] border-gray-400 flex justify-end overflow-auto">
+                            <span id="subnumber" class="text-gray-400 mr-2">0/5</span>
+                        </div>
+                        <div id="subpanel" class="transition-all flex flex-row flex-wrap overflow-x-auto ">
+                            <div class="relative element" id="cardtoadd" style="transition: 0.5s;filter: none;"><img id="imgcover9" src="./Assets/image.png" class="h-40 " alt="">
+                                <div onclick="AddSubs()" class="absolute inset-0 flex justify-center items-center">
+                                    <div class="relative text-gray-400 text-2xl cursor-pointer">
+                                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                    </div>    
+                                </div>
+                                
+                            
+                            <div class="absolute left-[18px] top-8 flex flex-col items-center">
+                                <h2 id="ratingtext9" class="m-0 p-0 font-bold text-ms"></h2>
+                                <span id="posttext9" class="text-[8px]"></span>
+                                <img id="imgflag9" class="w-5 " alt="">
+                            </div>
+                            <img id="imgplayer9" class="absolute left-10 w-16 top-6" alt="">
+                            <div class="absolute left-4 right-4 top-[88px]  text-[0.6rem] flex flex-col justify-center items-center text-center">
+                                <h2 class="font-bold" id="playername9"></h2>
+                                
+                                <div class="flex flex-col items-center">
+                                    <span id="playerclub9" class="text-[0.5rem]"></span>
+                                    <img id="imgclub9" class="w-4" alt="">
+                                </div>
+                                
+                            </div>
+                            
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+    
+                <div class=" w-full flex flex-col gap-2 px-6 pt-16 ">
+                    <div id="formations" ipOpened="false" 
+                        class="border-[#3C4053] rounded-md border-2 w-full py-5 px-10 transition-all max-md:-translate-y-56 max-md:z-[0]">
+                        <div class="flex justify-between items-center" onclick="OpenFormationMenu()">
+                            <h3 class=" text-gray-100 select-none cursor-pointer">Formations</h3>
+                            <i id="formationicon"
+                                class="fa-solid fa-chevron-down text-white cursor-pointer transition-all"></i>
+                        </div>
+                        <div id="formationcontent"></div>
+                    </div>
+                    <div id="playerinfo" >
+                        
+                    </div>
+                    <div id="playerspanel" 
+                    class="border-[#3C4053] border-2 max-md:border-0 max-md:bg-[#3C4053] max-md:border-transparent rounded-md  overflow-y-auto max-md:fixed top-[20%] left-4 right-4  ">
+                        
+                    </div>
+    
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    <div class="hidden  md:hidden fixed top-[80vh] right-5 h-20 w-20 rounded-full grid justify-center items-center bg-white ">
+        <img class="cursor-pointer  h-16 w-16  opacity-60 " src="./Assets/football.png" />
+    </div>
+    <div class="">
+        .
+    </div>
+    <footer>
+        footer
+    </footer>
+    <script src="./Js/builder.js"></script>
+    <script>
+
+    </script>
+    <script src="https://kit.fontawesome.com/ff84f079ef.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
