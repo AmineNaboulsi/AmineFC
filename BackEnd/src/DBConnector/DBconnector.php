@@ -4,18 +4,21 @@ class DBconnector {
     private $username = "" ;
     private $password="" ;
     private $bdname="" ;
+    private $port ;
     public $conn;
-    public function  __construct( $host , $username  , $password , $bdname ){
+    public function  __construct( $host , $username  , $password , $bdname , $port ){
         $this->host = $host ;
         $this->username = $username ;
         $this->password = $password ;
         $this->bdname = $bdname ;
+        $this->port = $port ;
 
     }
     public function OpenConnection(){
         try{
             $this->conn = new mysqli(
                 $this->host , $this->username , $this->password ,$this->bdname
+                ,$this->port
             );
     
             if ($this->conn->connect_error) {

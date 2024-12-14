@@ -1,5 +1,5 @@
 
-USE aminefcdb ;
+USE dbaminefc ;
 
 CREATE TABLE `nationality` (
   `nationality_id` INT PRIMARY KEY AUTO_INCREMENT,
