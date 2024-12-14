@@ -13,20 +13,29 @@ class DBconnector {
 
     }
     public function OpenConnection(){
-        $this->conn = new mysqli(
-            $this->host , $this->username , $this->password ,$this->bdname
-        );
-
-        if ($this->conn->connect_error) {
+        try{
+            $this->conn = new mysqli(
+                $this->host , $this->username , $this->password ,$this->bdname
+            );
+    
+            if ($this->conn->connect_error) {
+                return false;
+            }else{
+                return true;
+            }
+        }catch(Exception $e){
             return false;
-        }else{
-            return true;
+        }
+    }
+    public function CheckConnection(){
+        return (bool) $this->conn;
+    }
+    public function InsertClub($NewClub){
+
+        if (!$this->CheckConnection()) {
+            return false; // Exit if no connection
         }
         
-
-    }
-
-    public function InsertClub($NewClub){
         $stmt = $this->conn->prepare("
             INSERT INTO club 
             (club_name , club_img)
@@ -36,7 +45,6 @@ class DBconnector {
         $NewClub->name , $NewClub->photo);
 
         $stmt->execute();
-
     }
     public function GetClubs(){
         $stmt = $this->conn->prepare("

@@ -14,9 +14,8 @@ CREATE TABLE `club` (
 );
 
 
-
 CREATE TABLE `Player` (
-  `id` INT,
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100),
   `photo` VARCHAR(100),
   `position` VARCHAR(5),
@@ -31,11 +30,3 @@ CREATE TABLE `Player` (
    FOREIGN KEY (nationality_id) REFERENCES nationality(nationality_id),
    FOREIGN KEY (club_id) REFERENCES club(club_id)
 );
-
-insert into nationality (nationality_name , nationality_img )
-VALUE ('test','test');
-
-
-DESCRIBE nationality ;
-
-SELECT * FROM club
