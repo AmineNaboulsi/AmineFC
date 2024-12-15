@@ -1,24 +1,25 @@
 <?php 
 header('Content-Type: application/json');
-require_once("../src/Router/players.php");
+header('Access-Control-Allow-Origin: *');
+require_once("../src/Router/PlayerRouter.php");
+require_once("../src/Router/ClubsRouter.php");
 
+//Get URI path and http method 
 $request = $_SERVER['REQUEST_URI'];
-// echo '<script>alert("'.$request.'")</<script';
-$path = '/src/Controller/';
-switch($request)
+$method = $_SERVER['REQUEST_METHOD'];
+
+switch(true)
 {
-    case '':
-    case '/': 
-        echo 'home';
-        break;
-    case '/players': 
+    case (str_contains(strtok($request , '?') , '/players')):
        echo "players";
         break;
-    case '/nationalitys': 
+    case (str_contains(strtok($request , '?') , '/nationalitys')):
         echo "nationalitys";
         break;
-    case '/clubs':
-        echo 'clubs';
+    case (str_contains(strtok($request , '?') , '/clubs')):
+        // ClubsRouter::Dispatcher($request , $method);
+        $ClubsRouter = new ClubsRouter($request , $method);
+        $ClubsRouter->Dispatcher();
         break;
     default:
     http_response_code(404);
