@@ -244,20 +244,22 @@ input.forEach((input)=>{
 
 async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other like 1 in update */){
 
-  const apiKey = "3831af7143a217e46e098a7018fb2522";
+  const apiKey = "5KTx8W74";
   //We have to make in the env file to make it more secure lmohim 9di o 3adi
 
   if(imageFile != null){
     window.width > 1000 &&  (document.getElementById("panleform").style.opacity = '0.5') ;
     document.getElementById("panleform").style.pointerEvents = 'none' ;
     document.getElementById("progressloading").classList.remove('hidden');
+    
+    const base64Image = await fileToBase64(imageFile);
 
     const formData = new FormData();
-
-    formData.append("image", imageFile);
-  
+    formData.append("key", apiKey);
+    formData.append("imgbase64", base64Image);
+  console.log({imageFile : base64Image})
     try {
-        const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        const response = await fetch(`https://aminebb.controlesad.com/api/upload`, {
             method: "POST",
             body: formData,
         });
@@ -267,12 +269,42 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
         }
   
         const data = await response.json();
-        PlayerData.photo = data.data.url;
-  
+        PlayerData.photo = data.url;
+
+        console.log(
+          data
+        )
         if(mode == 0){
-          AllPlayersLis.splice(0,0,PlayerData)
+
+          const formData = new FormData();
+          formData.append('name', PlayerData.name);
+          formData.append('photo', PlayerData.photo);
+          formData.append('position', PlayerData.position);
+          formData.append('cover', PlayerData.cover);
+          formData.append('pace', PlayerData.pace);
+          formData.append('shooting', PlayerData.shooting);
+          formData.append('passing', PlayerData.passing);
+          formData.append('dribbling', PlayerData.dribbling);
+          formData.append('defending', PlayerData.defending);
+          formData.append('physical', PlayerData.physical);
+          formData.append('nationality_id', 1);
+          formData.append('club_id', 54986);
+          const apiResponse = await fetch(
+              `http://localhost:8582/addplayers`,
+              {
+                  method: 'POST',
+                  body: formData
+              }
+
+          );
+
+          if (!apiResponse.ok) {
+              const errorText = await apiResponse.text();
+              throw new Error(`HTTP error! status: ${apiResponse.status}, message: ${errorText}`);
+          }
+          //AllPlayersLis.splice(0,0,PlayerData)
           Display_All_Players(true);
-          localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
+          //localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
     
         }else{
             AllPlayersLis.forEach((element,i) => element.id == 
@@ -317,7 +349,14 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
 
   
 }
-
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);  // Resolve with Base64 string
+      reader.onerror = reject;  // Reject on error
+      reader.readAsDataURL(file);  // Start reading the file as Base64
+  });
+}
 
 function OpenFormPanel(id , mode){
 
@@ -523,7 +562,7 @@ const CoverCombo = new TomSelect('#CoverCombo',{
 });
 
 
-fetch('./Data/nation.json')
+fetch('../Data/nation.json')
 .then(response => response.json())
 .then(data => {
   FlagCombo.addOptions(data);
@@ -534,7 +573,7 @@ fetch('http://localhost:8582/clubs')
 .then(data => {
     ClubCombo.addOptions(data);
 })
-fetch('./Data/card.json')
+fetch('../Data/card.json')
 .then(response => response.json())
 .then(data => {
   CoverCombo.addOptions(data);

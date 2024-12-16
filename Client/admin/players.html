@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <div id="rows" class="">
 
@@ -12,69 +14,70 @@
     <script>
 
         document.addEventListener('DOMContentLoaded', () => {
-        async function importPLayerData() {
-            let index = 0 ;
-            try {
-                // Fetch JSON data
-                const response = await fetch('../Data/players.json');
-                const players = await response.json();
-    
-                for (const player of players) {
-                    try {
-                        const formData = new FormData();
-                        formData.append('name', player.name);
-                        formData.append('photo', player.photo);
-                        formData.append('position', player.position);
-                        formData.append('cover', player.cover);
-                        formData.append('pace', player.pace);
-                        formData.append('shooting', player.shooting);
-                        formData.append('passing', player.passing);
-                        formData.append('dribbling', player.dribbling);
-                        formData.append('defending', player.defending);
-                        formData.append('physical', player.physical);
-                        formData.append('nationality_id', 1 );
-                        formData.append('club_id',  54986);
-                        const apiResponse = await fetch(
-                            `http://localhost:8582/addplayers`, 
-                            {
-                                method: 'POST',
-                                body : formData
+            async function importPLayerData() {
+                let index = 0;
+                try {
+                    // Fetch JSON data
+                    const response = await fetch('../Data/players.json');
+                    const players = await response.json();
+
+                    for (const player of players) {
+                        try {
+                            const formData = new FormData();
+                            formData.append('name', player.name);
+                            formData.append('photo', player.photo);
+                            formData.append('position', player.position);
+                            formData.append('cover', player.cover);
+                            formData.append('pace', player.pace);
+                            formData.append('shooting', player.shooting);
+                            formData.append('passing', player.passing);
+                            formData.append('dribbling', player.dribbling);
+                            formData.append('defending', player.defending);
+                            formData.append('physical', player.physical);
+                            formData.append('nationality_id', 1);
+                            formData.append('club_id', 54986);
+                            const apiResponse = await fetch(
+                                `http://localhost:8582/addplayers`,
+                                {
+                                    method: 'POST',
+                                    body: formData
+                                }
+
+                            );
+
+                            if (!apiResponse.ok) {
+                                const errorText = await apiResponse.text();
+                                throw new Error(`HTTP error! status: ${apiResponse.status}, message: ${errorText}`);
                             }
-                            
-                        );
-    
-                        if (!apiResponse.ok) {
-                            const errorText = await apiResponse.text();
-                            throw new Error(`HTTP error! status: ${apiResponse.status}, message: ${errorText}`);
+
+                            const result = await apiResponse.json();
+                            console.log(result)
+                            let row = document.createElement('div');
+                            row.textContent = `${index}. ${result.message} ${player.name}`;
+                            document.getElementById('rows').appendChild(row);
+                            index++;
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+
+                        } catch (error) {
+                            let row = document.createElement('div');
+                            row.textContent = `Error adding  ${error}:`, error
+                            document.getElementById('rows').appendChild(row);
+                            index++;
+                            console.error();
                         }
-    
-                        const result = await apiResponse.json();
-                        console.log(result)
-                        let row = document.createElement('div');
-                        row.textContent = `${index}. ${result.message} ${player.name}`;
-                        document.getElementById('rows').appendChild(row);
-                        index++;
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-    
-                    } catch (error) {
-                        let row = document.createElement('div');
-                        row.textContent = `Error adding  ${error}:`, error
-                        document.getElementById('rows').appendChild(row);
-                        index++;
-                        console.error();
                     }
+
+                } catch (error) {
+                    console.error('Error importing club data:', error);
                 }
-    
-            } catch (error) {
-                console.error('Error importing club data:', error);
             }
-        }
-    
-        
 
- 
 
-        importPLayerData();
-    });</script>
+
+
+
+            importPLayerData();
+        });</script>
 </body>
+
 </html>

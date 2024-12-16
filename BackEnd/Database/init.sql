@@ -29,3 +29,5 @@ CREATE TABLE `Player` (
    FOREIGN KEY (nationality_id) REFERENCES nationality(nationality_id),
    FOREIGN KEY (club_id) REFERENCES club(club_id)
 );
+
+
