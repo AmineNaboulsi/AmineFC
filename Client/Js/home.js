@@ -1,3 +1,3 @@
 function ModeAdmin(){
-    window.location.href = '../FC/admin/dashboard.html'
+    window.location.href = './admin/dashboard.html'
 }

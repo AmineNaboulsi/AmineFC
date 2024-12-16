@@ -10,6 +10,8 @@ class DBconnector {
     public function  __construct(){
     }
     public function OpenConnection(){
+        //mysqli oriented object 
+        //mysqli procedurale
         try{
             $this->conn = new mysqli(
                 $this->host , $this->username , $this->password ,$this->bdname
@@ -17,7 +19,7 @@ class DBconnector {
             );
     
             if ($this->conn->connect_error) {
-                echo "Connection failed: " . $this->conn->connect_error; // Show the error message
+                echo "Connection failed: " . $this->conn->connect_error;
 
                 return false;
             }else{

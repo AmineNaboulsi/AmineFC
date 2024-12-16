@@ -10,13 +10,13 @@ function Display_All_Players(isFetched){
     )
       :
       (
-        fetch('./Data/players.json')
+        fetch('http://localhost:8582/players')
         .then(res=>res.json())
         .then(data=> {
             // console.log(Array.from(formations[formationPicked][pn-1].post).slice(-2).join())
             AddPlaperPanel(data);
             AllPlayersLis = data;
-            localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
+            //localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
         })
       )
     )
@@ -37,7 +37,7 @@ function AddPlaperPanel(data){
                       class="w-36" alt="">
                       
                       <div class="absolute left-[25px] top-[40px] flex flex-col items-center">
-                          <h2 class="m-0 p-0 font-bold text-ms ${item.rating>85 && (item.position != "GK" &&'text-[#FFD972]')}">${item.rating}</h2>
+                          <h2 class="m-0 p-0 font-bold text-ms text-[#FFD972] ">${Math.floor((item.pace + item.shooting + item.physical + item.passing + item.defending + item.dribbling + item.dribbling)/7) }</h2>
                           <span class="text-[8px] font-bold ${item.rating>85 && (item.position != "GK" &&'text-[#FFD972]')}">${item.position}</span>
                           <img class="w-5 ${item.rating>85 &&(item.position != "GK" &&'text-[#FFD972]')}" src="${item.flag}"  alt="" />
                       </div>
@@ -65,7 +65,7 @@ function AddPlaperPanel(data){
                                             <span>Rating : </span> 
                                             <span class="border-[2px] text-xs rounded-full
                                                  border-${item?.rating>=90 ? 'green-400' : item?.item>=60 ?'yellow-400' : 'red-400' } 
-                                              px-[2px] py-[2px]">${item?.rating}</span>
+                                              px-[2px] py-[2px]">${Math.floor((item.pace + item.shooting + item.physical + item.passing + item.defending + item.dribbling + item.dribbling)/7) }</span>
                                         </p>
                                          <p class="grid grid-cols-[1fr]">
                                             <span>Pace : </span> 
@@ -485,19 +485,19 @@ const FlagCombo = new TomSelect('#FlagCombo',{
 });
 
 const ClubCombo = new TomSelect('#ClubCombo',{
-  valueField: 'name',
-  searchField: 'name',
+  valueField: 'club_name',
+  searchField: 'club_name',
   render: {
     option: function(item, escape) {
       return `<div class="custom-option grid grid-cols-[auto,1fr] gap-3 items-center">
-          <img class="h-4 w-4" src="${item.img}" >
-          <span>${item.name}</span>
+          <img class="h-4 w-4" src="${item.club_img}" >
+          <span>${item.club_name}</span>
         </div>`;
     },
     item: function(item, escape) {
       return `<div id="Flaginput" class="custom-option grid grid-cols-[auto,1fr] gap-3 items-center">
-          <img id="ClubComboImg" class="h-4 w-4" src="${item.img}" >
-          <span id="ClubComboName">${item.name}</span>
+          <img id="ClubComboImg" class="h-4 w-4" src="${item.club_img}" >
+          <span id="ClubComboName">${item.club_name}</span>
         </div>`;
     }
   },
@@ -529,7 +529,7 @@ fetch('./Data/nation.json')
   FlagCombo.addOptions(data);
 })
 
-fetch('./Data/teams.json')
+fetch('http://localhost:8582/clubs')
 .then(response => response.json())
 .then(data => {
     ClubCombo.addOptions(data);

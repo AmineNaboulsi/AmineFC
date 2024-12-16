@@ -1,0 +1,53 @@
+<?php 
+require_once("../src/Models/Club.php");
+require_once("../src/Controller/PlayerController.php");
+require_once("../src/Controller/ClubController.php");
+class MainRouter{
+    private array $routes = [] ;  
+
+    public function __construct()
+    {
+        $this->routes = [
+                'GET' => [
+                    '/players' => [PlayerController::class , 'GetPLayers'],
+                    '/clubs' => [ClubController::class , 'GetClubs']
+                ],
+                'POST' => [
+                    '/addclub' => [PlayerController::class , 'InsertClub']
+                ],
+                'POST' => [
+                    '/addplayers' => [PlayerController::class , 'AddPLayers']
+                ],
+                'PUT' => [
+                    '/editplayers' => [PlayerController::class , 'EditPLayers']
+                ],
+                'DELETE' => [
+                    '/delplayers' => [PlayerController::class , 'DeletePLayers']
+                ]
+            ];
+        
+    }
+    public function Dispatcher($method , $uri){
+        $route = strtok($uri, '?');
+
+        if(isset($this->routes[$method][$route])){
+            $controllerMethod = $this->routes[$method][$route];
+         
+            $controller = new $controllerMethod[0]();
+            $method = $controllerMethod[1];
+            
+            $result = $controller->$method();
+            
+            header('Content-Type: application/json');
+            echo json_encode($result);
+           
+        }else{
+            echo json_encode([
+                'status' => false ,
+                'msg' => 'Invalid route action '
+            ]);
+        }
+    }
+}
+
+?>
