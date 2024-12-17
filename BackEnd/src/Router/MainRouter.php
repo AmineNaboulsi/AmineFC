@@ -2,6 +2,7 @@
 require_once("../src/Models/Club.php");
 require_once("../src/Controller/PlayerController.php");
 require_once("../src/Controller/ClubController.php");
+require_once("../src/Controller/NationnalityController.php");
 class MainRouter{
     private array $routes = [] ;  
 
@@ -10,13 +11,13 @@ class MainRouter{
         $this->routes = [
                 'GET' => [
                     '/players' => [PlayerController::class , 'GetPLayers'],
-                    '/clubs' => [ClubController::class , 'GetClubs']
+                    '/clubs' => [ClubController::class , 'GetClubs'],
+                    '/nationnalitys' => [NationnalityController::class , 'GetNationnalitys']
                 ],
                 'POST' => [
-                    '/addclub' => [PlayerController::class , 'InsertClub']
-                ],
-                'POST' => [
-                    '/addplayers' => [PlayerController::class , 'AddPLayers']
+                    '/addplayers' => [PlayerController::class , 'AddPLayers'],
+                    '/addclub' => [ClubController::class , 'InsertClub'],
+                    '/addnationnality' => [NationnalityController::class , 'InsertNationnality'],
                 ],
                 'PUT' => [
                     '/editplayers' => [PlayerController::class , 'EditPLayers']

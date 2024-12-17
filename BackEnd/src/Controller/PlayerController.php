@@ -9,7 +9,8 @@ class PlayerController {
     }
 
     public function GetPLayers(){
-        $query = 'SELECT * FROM Player';
+        $query = 'SELECT p.* , c.club_name as clubname FROM Player p  
+                JOIN club c ON c.club_id = p.club_id';
 
         $this->DBconnector->OpenConnection();
         $SQLDATAREADER = $this->DBconnector->conn->prepare($query);

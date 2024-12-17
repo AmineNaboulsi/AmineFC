@@ -31,3 +31,14 @@ CREATE TABLE `Player` (
 );
 
 
+CREATE FUNCTION GetNationalit(TEST INT) RETURNS INT
+BEGIN
+    DECLARE R INT ;
+    SELECT COUNT(*) INTO R 
+    FROM nationality;
+
+    RETURN R ;
+END;
+
+
+

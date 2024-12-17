@@ -199,7 +199,7 @@ function AddPlaperPanel(data  , pn , post , isOnterain){
                       class="w-32" alt="">
                       
                       <div class="absolute left-[25px] top-[40px] flex flex-col items-center">
-                          <h2 class="m-0 p-0 font-bold text-ms">${item.position == "GK" ?   : }</h2>
+                          <h2 class="m-0 p-0 font-bold text-ms"></h2>
                           <span class="text-[8px] font-bold ${item.rating>85 && (item.position != "GK" &&'text-[#FFD972]')}">${item.position}</span>
                           <img class="w-5 ${item.rating>85 &&(item.position != "GK" &&'text-[#FFD972]')}" src="${item.flag}"  alt="" />
                       </div>

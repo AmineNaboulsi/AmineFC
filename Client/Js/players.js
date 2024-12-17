@@ -16,6 +16,8 @@ function Display_All_Players(isFetched){
             // console.log(Array.from(formations[formationPicked][pn-1].post).slice(-2).join())
             AddPlaperPanel(data);
             AllPlayersLis = data;
+          console.log(data)
+
             //localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
         })
       )
@@ -149,7 +151,7 @@ Display_All_Players(false);
 // =======
 //input range event lkola wa7d
 
-const inputRange = ['Rating' ,'Pace','Shooting','Passing','Defending','Dribbling','Physical'] 
+const inputRange = ['Pace','Shooting','Passing','Defending','Dribbling','Physical'] 
 
 inputRange.forEach((item)=>{
   document.getElementById("RangePlayer"+item).addEventListener("input", () => {
@@ -177,7 +179,9 @@ function AddPlayer(event){
       position : document.getElementById("ComboplayerPosition")?.value ,
       nationality : document.getElementById("FlagComboName")?.textContent ,
       flag : document.getElementById("FlagComboImg")?.getAttribute('src') ,
-      club : document.getElementById("ClubComboName")?.textContent ,
+      club : document.getElementById("ClubComboName")?.getAttribute('data-id') ,
+      clubname : document.getElementById("ClubComboName")?.textContent ,
+
       logo : document.getElementById("ClubComboImg")?.getAttribute('src') ,
       rating : document.getElementById("RangePlayerRating")?.value ,
       pace : document.getElementById("RangePlayerPace")?.value ,
@@ -288,7 +292,8 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
           formData.append('defending', PlayerData.defending);
           formData.append('physical', PlayerData.physical);
           formData.append('nationality_id', 1);
-          formData.append('club_id', 54986);
+          formData.append('club_id', PlayerData.club);
+          console.log({ club :  PlayerData.club})
           const apiResponse = await fetch(
               `http://localhost:8582/addplayers`,
               {
@@ -302,8 +307,10 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
               const errorText = await apiResponse.text();
               throw new Error(`HTTP error! status: ${apiResponse.status}, message: ${errorText}`);
           }
+          const data = apiResponse.json();
+          console.log(data);
           //AllPlayersLis.splice(0,0,PlayerData)
-          Display_All_Players(true);
+          Display_All_Players(false);
           //localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
     
         }else{
@@ -359,10 +366,12 @@ function fileToBase64(file) {
 }
 
 function OpenFormPanel(id , mode){
+  document.getElementById("FormPanelEdit").classList.remove("hidden")
 
   if(document.getElementById("FormPanel").getAttribute('isopned') == 'true' && id !=0){
     document.getElementById("FormPanel").setAttribute('isopned','false')
     document.getElementById("FormPanel").classList.add("grid-cols-1")
+    document.getElementById("FormPanel").classList.remove("grid-cols-[1fr,600px]")
     // document.getElementById("FormPanel").classList.remove("grid-cols-[1fr,auto]")  
     // if(window.width > 1150){
       
@@ -374,23 +383,33 @@ function OpenFormPanel(id , mode){
     //   // document.getElementById("datalistplayers").classList.add('h-[20vh]')
     // }
 
-    document.getElementById("FormPanelEdit").classList.add("hidden")
+    document.getElementById("FormPanelEdit").classList.remove("w-auto")
+    document.getElementById("FormPanelEdit").classList.add("w-[0px]")
   }
   else{
     document.getElementById("FormPanel").setAttribute('isopned','true')
 
     document.getElementById("FormPanel").classList.remove("grid-cols-1")
-    document.getElementById("FormPanel").classList.add("grid-cols-[1fr,auto]")
+    document.getElementById("FormPanel").classList.add("grid-cols-[1fr,600px]")
 
-    document.getElementById("FormPanelEdit").classList.remove("hidden")
+    document.getElementById("FormPanelEdit").classList.add("w-auto")
+    document.getElementById("FormPanelEdit").classList.remove("w-[0px]")
   }
   id==0 ?( document.getElementById("formsubmitbtn").setAttribute("onclick" , "UpdatePlayer(event)" ) ,
   document.getElementById('uploadedit').classList.remove('hidden'),
-  document.getElementById('uploadadd').classList.add('hidden')
-  )
-  : (document.getElementById("formsubmitbtn").setAttribute("onclick" , "AddPlayer(event)" ) , 
-  document.getElementById('uploadedit').classList.add('hidden'),
-  document.getElementById('uploadadd').classList.remove('hidden')
+  document.getElementById('uploadadd').classList.add('hidden'),
+  document.getElementById("formsubmitbtn").innerHTML =`` ,
+  document.getElementById("formsubmitbtn").classList.remove('bg-[#6158CA]') ,
+  document.getElementById("formsubmitbtn").classList.add('bg-[#00877A]') ,
+  document.getElementById("formsubmitbtn").innerHTML =`<i class="fa-solid fa-rotate-right"></i>` 
+)
+: (document.getElementById("formsubmitbtn").setAttribute("onclick" , "AddPlayer(event)" ) , 
+document.getElementById('uploadedit').classList.add('hidden'),
+document.getElementById('uploadadd').classList.remove('hidden'),
+document.getElementById("formsubmitbtn").classList.remove('bg-[#00877A]') ,
+document.getElementById("formsubmitbtn").classList.add('bg-[#6158CA]') ,
+document.getElementById("formsubmitbtn").innerHTML =`` ,
+document.getElementById("formsubmitbtn").innerHTML =`<i class="fa-solid fa-floppy-disk"></i>` 
 )
   if(mode != -1){
     IdCArdPlaterSelected = mode
@@ -406,7 +425,8 @@ function OpenFormPanel(id , mode){
         position : document.getElementById("ComboplayerPosition"),
         nationality : document.getElementById("FlagComboName") ,
         flag : document.getElementById("FlagComboImg")?.getAttribute('src') ,
-        club : document.getElementById("ClubComboName")?.textContent ,
+        club : document.getElementById("ClubComboName")?.getAttribute('data-id') ,
+        clubname : document.getElementById("ClubComboName")?.textContent ,
         logo : document.getElementById("ClubComboImg")?.getAttribute('src') ,
         rating : document.getElementById("RangePlayerRating") ,
         pace : document.getElementById("RangePlayerPace") ,
@@ -430,11 +450,11 @@ function OpenFormPanel(id , mode){
 
     // ;
     CoverCombo.setValue(playerPikced.cover);
-    ClubCombo.setValue(playerPikced.club);
+    ClubCombo.setValue(playerPikced.clubname);
     FlagCombo.setValue(playerPikced.nationality)
 
 
-    PlayerData.rating.value = playerPikced.rating
+    // PlayerData.rating.value = playerPikced.rating
     PlayerData.pace.value = playerPikced.pace
     PlayerData.shooting.value = playerPikced.shooting
     PlayerData.passing.value =playerPikced.passing
@@ -442,7 +462,7 @@ function OpenFormPanel(id , mode){
     PlayerData.defending.value = playerPikced.defending
     PlayerData.physical.value = playerPikced.physical
 
-    const inputRange = ['Rating' ,'Pace','Shooting','Passing','Defending','Dribbling','Physical'] 
+    const inputRange = ['Pace','Shooting','Passing','Defending','Dribbling','Physical'] 
     document.getElementById(inputRange[0]+"Display").textContent = `${inputRange[0]} (${playerPikced?.rating}):`;
     document.getElementById(inputRange[1]+"Display").textContent = `${playerPikced?.pace ?  inputRange[1] :'Diving'} (${playerPikced?.pace ?? playerPikced?.diving}):`;
     document.getElementById(inputRange[2]+"Display").textContent = `${playerPikced?.shooting ? inputRange[2]:'Handling'} (${playerPikced?.shooting ?? playerPikced?.handling}):`;
@@ -466,7 +486,8 @@ function UpdatePlayer(e){
     position : document.getElementById("ComboplayerPosition")?.value ,
     nationality : document.getElementById("FlagComboName")?.textContent ,
     flag : document.getElementById("FlagComboImg")?.getAttribute('src') ,
-    club : document.getElementById("ClubComboName")?.textContent ,
+    club : document.getElementById("ClubComboName")?.getAttribute('data-id') ,
+    clubname : document.getElementById("ClubComboName")?.textContent ,
     logo : document.getElementById("ClubComboImg")?.getAttribute('src') ,
     rating : document.getElementById("RangePlayerRating")?.value ,
     pace : document.getElementById("RangePlayerPace")?.value ,
@@ -489,7 +510,8 @@ if (checkfiledrequied(PlayerData , 1)) {
 
 function ClosePopPUPFormulaire(e){
   e.preventDefault();
-  document.getElementById("FormPanelEdit").classList.add('hidden')
+  document.getElementById("FormPanel").classList.remove('grid-cols-[1fr,600px]')
+  document.getElementById("FormPanelEdit").classList.add('w-[0px]')
   document.getElementById("FormPanel").setAttribute('isopned','false')
 
   imageFile = null
@@ -536,7 +558,7 @@ const ClubCombo = new TomSelect('#ClubCombo',{
     item: function(item, escape) {
       return `<div id="Flaginput" class="custom-option grid grid-cols-[auto,1fr] gap-3 items-center">
           <img id="ClubComboImg" class="h-4 w-4" src="${item.club_img}" >
-          <span id="ClubComboName">${item.club_name}</span>
+          <span id="ClubComboName" data-id="${item.club_id}">${item.club_name}</span>
         </div>`;
     }
   },
@@ -562,7 +584,7 @@ const CoverCombo = new TomSelect('#CoverCombo',{
 });
 
 
-fetch('../Data/nation.json')
+fetch('../pData/nation.json')
 .then(response => response.json())
 .then(data => {
   FlagCombo.addOptions(data);
