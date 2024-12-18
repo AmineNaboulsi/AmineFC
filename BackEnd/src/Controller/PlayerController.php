@@ -9,8 +9,9 @@ class PlayerController {
     }
 
     public function GetPLayers(){
-        $query = 'SELECT p.* , c.club_name as clubname FROM Player p  
-                JOIN club c ON c.club_id = p.club_id';
+        $query = 'SELECT p.* , c.club_name as clubname , n.nationality_img flag , n.nationality_name nationality FROM Player p  
+                JOIN club c ON c.club_id = p.club_id
+                JOIN nationality n  ON n.nationality_id = n.nationality_id';
 
         $this->DBconnector->OpenConnection();
         $SQLDATAREADER = $this->DBconnector->conn->prepare($query);
@@ -31,18 +32,24 @@ class PlayerController {
     }
     public function AddPLayers(){
         
-        if(isset($_POST['name']) &&
-            isset($_POST['photo']) &&
-            isset($_POST['cover']) &&
-            isset($_POST['position']) &&
-            isset($_POST['pace']) &&
-            isset($_POST['shooting']) &&
-            isset($_POST['passing']) &&
-            isset($_POST['dribbling']) &&
-            isset($_POST['defending']) &&
-            isset($_POST['physical']) &&
-            isset($_POST['nationality_id']) &&
-            isset($_POST['club_id']) ){
+        $requiredParams = [
+            'name', 'photo', 'cover', 'position', 'pace', 
+            'shooting', 'passing', 'dribbling', 'defending', 
+            'physical', 'nationality_id', 'club_id'
+        ];
+        //had array db katakhod list li biti tfiltriha 
+        //o second par howa function 
+        $missingParams = array_filter($requiredParams, function($par) {
+            return !isset($_POST[$par]);
+        });
+        // print_r($missingParams);
+        if (!empty($missingParams)) {
+            return [
+                "status" => false,
+                "message" => "Missing parameters: " 
+            ];
+        }
+
                 $query = 'insert into Player 
                 (name , photo , cover , position, pace , shooting,
                 passing , dribbling , defending , physical , nationality_id , club_id)
@@ -65,29 +72,28 @@ class PlayerController {
                 }
                 $this->DBconnector->CloseConnection();
                 return ['status' => true, 'message' => 'PLayer added successfully'];
-        
-
-            }else{
-                return ['status' => false, 'message' => 'Missing parametres'];
-
-            }
       
     }
     public function EditPLayers(){
 
-        if(isset($_GET['id']) && isset($_GET['name']) &&
-            isset($_GET['photo']) &&
-            isset($_POST['cover']) &&
-            isset($_GET['position']) &&
-            isset($_GET['pace']) &&
-            isset($_GET['shooting']) &&
-            isset($_GET['passing']) &&
-            isset($_GET['dribbling']) &&
-            isset($_GET['defending']) &&
-            isset($_GET['physical']) &&
-            isset($_GET['nationality_id']) &&
-            isset($_GET['club_id'])){
-                $query = 'UPDATE Player SET
+        $requiredParams = [
+            'id', 'name', 'photo', 'cover', 'position', 'pace', 
+            'shooting', 'passing', 'dribbling', 'defending', 
+            'physical', 'nationality_id', 'club_id'
+        ];
+        //had array db katakhod list li biti tfiltriha 
+        //o second par howa function 
+        $missingParams = array_filter($requiredParams, function($par) {
+            return !isset($_GET[$par]);
+        });
+        // print_r($missingParams);
+        if (!empty($missingParams)) {
+            return [
+                "status" => false,
+                "message" => "Missing parameters: " 
+            ];
+        }
+        $query = 'UPDATE Player SET
                 name = ? , photo = ? , cover = ?  , position = ? , pace = ?  , shooting = ? ,
                 passing = ? , dribbling = ?  , defending = ?  , physical = ?  ,
                  nationality_id = ?  , club_id = ? 
@@ -110,10 +116,6 @@ class PlayerController {
                 $this->DBconnector->CloseConnection();
                 return ['status' => true, 'message' => 'PLayer Updated successfully'];
         
-            }else{
-                return ['status' => false, 'message' => 'Missing parametres'];
-
-            }
        
     }
     public function DeletePLayers(){

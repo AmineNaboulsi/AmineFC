@@ -20,10 +20,14 @@ class MainRouter{
                     '/addnationnality' => [NationnalityController::class , 'InsertNationnality'],
                 ],
                 'PUT' => [
-                    '/editplayers' => [PlayerController::class , 'EditPLayers']
+                    '/editplayers' => [PlayerController::class , 'EditPLayers'],
+                    '/editclub' => [ClubController::class , 'EditClub'],
+                    '/editnationnality' => [NationnalityController::class , ''],
                 ],
                 'DELETE' => [
-                    '/delplayers' => [PlayerController::class , 'DeletePLayers']
+                    '/delplayers' => [PlayerController::class , 'DeletePLayers'],
+                    '/delclub' => [ClubController::class , ''],
+                    '/delnationnality' => [NationnalityController::class , ''],
                 ]
             ];
         

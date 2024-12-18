@@ -32,7 +32,6 @@ class DBconnector {
     public function CheckConnection(){
         return (bool) $this->conn;
     }
-
     public function MessageInfo($msg){
         return $msg;
     }

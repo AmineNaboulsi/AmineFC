@@ -38,13 +38,19 @@ class ClubController {
        
     }
     public function GetClubs(){
+        $query = 'SELECT * FROM club';
+        if(isset($_GET['id'])){
+            $query = 'SELECT * FROM club WHERE club_id = ?';
+        }
         $this->DBconnector->OpenConnection();
         if (!$this->DBconnector->CheckConnection()) {
             return null; 
         }
-        $stmt = $this->DBconnector->conn->prepare("
-            SELECT * FROM club
-        ");
+        $stmt = $this->DBconnector->conn->prepare($query);
+        if(isset($_GET['id'])){
+            $stmt->bind_param('i' , 
+            $_GET['id']);
+        }
         $stmt->execute();
         $result = $stmt->get_result();
         $Data = [] ;
@@ -55,7 +61,37 @@ class ClubController {
         $this->DBconnector->CloseConnection();
         return $Data;
     }
-    
+    public function EditClub(){
+        $allpara = [
+            'id','name','img'
+        ];
+        $missingpara = array_filter($allpara , function ($itemPara) {
+            return !isset($_GET[$itemPara]);
+        });
+        if(!empty($missingpara)){
+            return [
+                "status" => false,
+                "message" => "Missing parameters: " 
+            ];
+        }
+
+        $query = 'Update SET club 
+        SET club_name = ? , club_img = ? 
+        WHERE club_id = ?' ;
+        $SqlDataReader =  $this->DBconnector->conn->query($query);
+
+        $SqlDataReader->bind_param('ssi' ,
+        $_GET['name'] , $_GET['img'] , $_GET['id'] );
+        if(!$SqlDataReader->execute()){
+            return [
+                "status" => false ,
+                "message" => "Error".$SqlDataReader->error
+            ];
+        }
+        $this->DBconnector->CloseConnection();
+        return ['status' => true, 'message' => 'PLayer Updated successfully'];
+
+    }
 
 
 }

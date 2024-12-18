@@ -12,7 +12,6 @@ CREATE TABLE `club` (
   `club_img` VARCHAR(1000) 
 );
 
-
 CREATE TABLE `Player` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(100),
@@ -26,9 +25,11 @@ CREATE TABLE `Player` (
   `physical` INT,
   `nationality_id` INT,
   `club_id` INT,
-   FOREIGN KEY (nationality_id) REFERENCES nationality(nationality_id),
-   FOREIGN KEY (club_id) REFERENCES club(club_id)
+   FOREIGN KEY (nationality_id) REFERENCES nationality(nationality_id) on DELETE CASCADE,
+   FOREIGN KEY (club_id) REFERENCES club(club_id) on DELETE CASCADE,
 );
+
+
 
 
 CREATE FUNCTION GetNationalit(TEST INT) RETURNS INT
@@ -39,6 +40,3 @@ BEGIN
 
     RETURN R ;
 END;
-
-
-

@@ -1,5 +1,5 @@
 <?php
-require_once('../Config/DBconnector.php');
+require_once("../src/Config/DBconnector.php");
 
 class NationnalityController{
     private $DBconnector ;
@@ -11,10 +11,18 @@ class NationnalityController{
     public function GetNationnalitys(){
         $query=  'CALL GetNationalitys()';
         $this->DBconnector->OpenConnection();
-        $SQLDATAREADER = $this->DBconnector->conn->query($query);
+        $SQLDATAREADER = $this->DBconnector->conn->prepare($query);
+       
+        if(!$SQLDATAREADER->execute()){
+            return [
+                "status" => false ,
+                "message" => "Error".$SQLDATAREADER->error
+            ];
+        }
+        $DataPlayers = $SQLDATAREADER->get_result();
         $Data = [] ;
-        while ($row = $SQLDATAREADER->fetch_assoc()) {
-            $Data = $row ;
+        while($row = $DataPlayers->fetch_assoc()){
+            $Data[] = $row ;
         }
         $this->DBconnector->CloseConnection();
         return $Data;
@@ -25,10 +33,10 @@ class NationnalityController{
             if (!$this->DBconnector->CheckConnection()) {
                 return ['status' => false, 'message' => 'Database connection failed'];
             }
-            $stmt = $this->DBconnector->conn->query("
+            $stmt = $this->DBconnector->conn->prepare("
                 INSERT INTO nationality 
                 (nationality_name , nationality_img)
-                VALUES (?,?);
+                VALUES ( ? , ? )
             ");
         
             if (!$stmt) {

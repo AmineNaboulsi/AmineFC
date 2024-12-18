@@ -16,8 +16,7 @@
         <div class="container  grid grid-cols-[auto,1fr,auto] max-xl:gap-2 max-xl:grid-cols-1 max-xl:justify-center items-center  py-4 px-3 text-gray-200">
             <h2 class="text-[#6158CA] text-center">AmineFC</h2>
             <ul class="flex justify-center gap-6 max-xl:font-semibold max-xl:gap-12 ">
-                <button class="text-[#6158CA]  bg-white rounded-md px-3 py-1">Exit Edit Mode</button>
-
+                <button class="text-[#6158CA]  bg-white rounded-md px-3 py-1">Exit Dashboard Mode</button>
             </ul>
             <div class="flex items-center gap-5 max-xl:hidden">
                 <div
@@ -30,23 +29,66 @@
     </header>
     <div class="lc"></div>
     <div class="rc"></div>
+    <div id="panelclub" class="hidden panelclassclub fixed z-[2] w-full left-0 right-0 grid justify-center ">
+        <div class="absolute left-[40%] max-md:left-[15%]  text-white bg-[#2D2C6D] p-4">
+            <form action="" method="get">
+                <div class="grid gap-2">
+                    <div id="" class="relative border-[1px] max-xl:border-white border-dashed rounded-md flex flex-col justify-center items-center">
+                        <img id="updateimgclub" src="" alt="" class="h-24">
+                        <div class="flex gap-2 items-center">
+                            <span class="text-white">or</span>
+                            <input class="my-2 text-gray-50 max-xl:text-white"
+                            accept="image/png, image/jpg, image/jpeg"
+                            type="file" id="fileInput" multiple />
+                        </div>
+                        <h6 class="mt-1 text-gray-300 max-xl:text-white text-[0.6rem]">Supports : JPEG , JPG, PNG</h6>
+    
+                        <h2 id="imagepanelR" class="text-2xl text-red-600 absolute top-2 right-5"></h2>
+                    </div>
+                    <div class="my-2 grid gap-1">
+                        <h3>New Club Name</h3>
+                        <input id="txtclubpanel" class="w-full px-2 py-1 bg-transparent border-[1px] border-gray-400 rounded-md" type="text" />
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 relative ">
+                        <button type="submit" onclick="Close" 
+                                 class="py-1 bg-blue-500" >
+                             <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                        <button type="submit" onclick="" 
+                           class="py-1 bg-red-600" >
+                              <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <button type="submit" onclick="ClosePanelClub(event)" 
+                        class="absolute -bottom-16 left-0 right-0" >
+                           <i  class="fa-solid fa-chevron-up p-3  bg-[#2D2C6D] rounded-[100%] "></i>
+                     </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <section class="mx-7 max-xl:mx-2">
         <div class="container h-[100%]">
             <div class="h-[80vh] border-[1px] border-gray-400 mt-12 max-xl:mt-3  rounded-md py-3 ">
                 <div class="px-8 max-xl:px-3 pb-4 border-b-[1px] flex justify-between items-center ">
-                    <h2 class="text-xl text-white " border-gray-400>Players</h2>
-
-                    <div onclick="OpenFormPanel(1 ,-1)" class="cursor-pointer text-gray-50 rounded-md bg-[#6158CA] px-3 py-2 max-xl:py-1 flex justify-center items-center gap-2">
+                    <h2 id="paneltitle" class="text-xl text-white " border-gray-400>Players</h2>
+                    <div class="relative flex gap-[30px] items-center text-gray-50 ">
+                        <div id="scrollbar" class="z-[-1] absolute transition-all  left-0  bg-[#6158CA] h-full w-16 rounded-md"></div>
+                        <span onclick="PanelMoveTo(1)" class="cursor-pointer w-12 p-2">Players</span>
+                        <span onclick="PanelMoveTo(2)" class="cursor-pointer w-10 p-2">Clubs</span>
+                        <span onclick="PanelMoveTo(3)" class="cursor-pointer w-24 p-2">Nationnality</span>
+                    </div>
+                    <!-- <div onclick="OpenFormPanel(1 ,-1)" class="  rounded-md  px-3 py-2 max-xl:py-1 flex justify-center items-center gap-2">
                         <i class="fa-solid fa-plus"></i>
                         <span>Add Player</span>
-                    </div> 
+                    </div>  -->
                 </div>
 
                 <div id="FormPanel"  isOpned="false" class="grid h-[100%] w-full ">
                     <div id="playerslist" class="flex flex-wrap h-[100%] ">
                         
                     </div>
-                    <form id="FormPanelEdit" action="" class="h-[70vh] max-md:h-auto  overflow-y-auto max-xl:fixed max-md:inset-7 max-xl:top-[20%] max-xl:left-7 max-xl:right-7 hidden" >
+                    <form id="FormPanelEdit" action="" class="h-[70vh] resize-x max-md:h-auto  overflow-y-auto max-xl:fixed max-md:inset-7 max-xl:top-[20%] max-xl:left-7 max-xl:right-7 hidden" >
                         <div id="progressloading" class='h-1.5 w-full hidden overflow-hidden'>
                             <div class='progress w-full h-full bg-[#6158CA] left-right'></div>
                           </div>
@@ -176,13 +218,13 @@
         
                                                 </div>
                                             </div>
-                                            <div class="grid grid-cols-[1fr,auto] max-md:grid-cols-1 px-5  items-center">
+                                            <div class="grid grid-cols-[1fr,auto] max-md:grid-cols-1 max-md:ltl gap-3  px-5  items-center">
                                                 <button type="submit" onclick="ClosePopPUPFormulaire(event)" 
                                                 class=" max-xl:static max-xl:col-span-2 max-xl:w-full -bottom-1  right-18 flex justify-center items-center h-11 w-11 text-sm py-1 rounded-full max-xl:rounded-sm text-white bg-gray-400 " >
                                                     <i class="fa-solid fa-arrow-left"></i>
                                                 </button>
-                                                <div class="grid grid-cols-2 gap-5 max-xl:gap-2">
-                                                    <button type="submit" onclick="DeletePlayer(event)" 
+                                                <div class="grid grid-cols-2 gap-5 justify-end w-full max-xl:gap-2">
+                                                    <button id="formdelbtn" type="submit" onclick="DeletePlayer(event)" 
                                                         class=" max-xl:static max-xl:w-full -bottom-1 right-14 flex justify-center items-center h-11 w-11 text-sm py-1 rounded-full max-xl:rounded-sm text-white bg-[#f72d2d] " >
                                                         <i class="fa-solid fa-xmark"></i>
                                                     </button>
@@ -206,7 +248,6 @@
                         </div>
                         
                      </form>
-                    
                 </div>
             </div>
         </div>
