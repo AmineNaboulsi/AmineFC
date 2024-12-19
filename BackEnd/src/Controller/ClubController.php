@@ -74,11 +74,13 @@ class ClubController {
                 "message" => "Missing parameters: " 
             ];
         }
+        $this->DBconnector->OpenConnection();
 
-        $query = 'Update SET club 
+
+        $query = 'Update club 
         SET club_name = ? , club_img = ? 
         WHERE club_id = ?' ;
-        $SqlDataReader =  $this->DBconnector->conn->query($query);
+        $SqlDataReader =  $this->DBconnector->conn->prepare($query);
 
         $SqlDataReader->bind_param('ssi' ,
         $_GET['name'] , $_GET['img'] , $_GET['id'] );
@@ -89,10 +91,25 @@ class ClubController {
             ];
         }
         $this->DBconnector->CloseConnection();
-        return ['status' => true, 'message' => 'PLayer Updated successfully'];
+        return ['status' => true, 'message' => 'Club Updated successfully'];
 
     }
+    public function DelClub(){
+        if(isset($_GET['id']))
+        {
+            $query = 'DELETE FROM club WHERE club_id = ?' ;
+            $this->DBconnector->OpenConnection();
+            $SQLDATAREADER = $this->DBconnector->conn->prepare($query);
+            
+            if(!$SQLDATAREADER->execute()){
+                return [
+                    "status" => false ,
+                    "message"=> "Error "
+                ];
+            }
 
 
+        }
+    }
 }
 ?>

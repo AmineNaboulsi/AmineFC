@@ -1,13 +1,25 @@
 <?php  
+
+use Dotenv\Dotenv;
+require __DIR__ . '../../../vendor/autoload.php';
+
 class DBconnector {
-    private $host="localhost";
-    private $username = "amineremote" ;
-    private $password="amine" ;
-    private $bdname="dbaminefc" ;
-    private $port=3307;
+    private $host ;
+    private $username;
+    private $password  ;
+    private $bdname ;
+    private $port ;
 
     public $conn;
     public function  __construct(){
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+        $dotenv->load();
+        $this->host=$_ENV['HOST'];
+        $this->username = $_ENV['USERNAME'] ;
+        $this->password=$_ENV['PASSWORD'];
+        $this->bdname=$_ENV['DBNAME'];
+        $this->port=$_ENV['PORT'];
+
     }
     public function OpenConnection(){
         //mysqli oriented object 

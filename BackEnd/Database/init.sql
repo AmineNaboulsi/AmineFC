@@ -40,3 +40,8 @@ BEGIN
 
     RETURN R ;
 END;
+
+
+Update  club 
+        SET club_name = ? , club_img = ? 
+        WHERE club_id = ?

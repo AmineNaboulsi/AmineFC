@@ -1,9 +1,11 @@
 let AllPlayersLis = []
 let IdCArdPlaterSelected = -1 ;
-let TargetINdexPanel = 1 ;
+let TargetINdexPanel = localStorage.getItem('TabLayout') ? localStorage.getItem('TabLayout')   :  1 ;
+let ClubSelectedObject = null ;
+let ImageClubSelected = null ;
 function Display_All_Players(){
   let routedata ="" ; 
-
+  localStorage.setItem('TabLayout' , TargetINdexPanel)
   TargetINdexPanel==1 && (routedata = 'players');
   TargetINdexPanel==2 && (routedata = 'clubs');
   TargetINdexPanel==3 && (routedata = 'nationnalitys');
@@ -30,9 +32,7 @@ function AddPlaperPanel(data , pos){
     if(pos == 1){
       data && data.forEach((item , i)=>{
               PlayerCards += `
-                
           <div class="flip-card" onclick='OpenFormPanel(0,${item.id})' >
-           
               <div class="flip-card-inner">
               
                    <div class=' flip-card-front relative shadow-md cursor-pointer''>
@@ -184,7 +184,7 @@ function PanelMoveTo(pos){
     document.getElementById("scrollbar").classList.add('left-0'),
     document.getElementById("scrollbar").classList.remove('left-[30%]'),
     document.getElementById("scrollbar").classList.remove('left-[60%]'),
-    document.getElementById("scrollbar").classList.remove('w-28'),
+    document.getElementById("scrollbar").classList.remove('w-24'),
     document.getElementById("scrollbar").classList.add('w-16'),
     document.getElementById("paneltitle").textContent = 'Players'
   )
@@ -192,7 +192,7 @@ function PanelMoveTo(pos){
     document.getElementById("scrollbar").classList.remove('left-0'),
     document.getElementById("scrollbar").classList.add('left-[30%]'),
     document.getElementById("scrollbar").classList.remove('left-[60%]'),
-    document.getElementById("scrollbar").classList.remove('w-28'),
+    document.getElementById("scrollbar").classList.remove('w-24'),
     document.getElementById("scrollbar").classList.add('w-16'),
     document.getElementById("paneltitle").textContent = 'Clubs'
   )
@@ -200,7 +200,7 @@ function PanelMoveTo(pos){
     document.getElementById("scrollbar").classList.remove('left-0'),
     document.getElementById("scrollbar").classList.remove('left-[30%]'),
     document.getElementById("scrollbar").classList.add('left-[60%]'),
-    document.getElementById("scrollbar").classList.add('w-28'),
+    document.getElementById("scrollbar").classList.add('w-24'),
     document.getElementById("scrollbar").classList.remove('w-16'),
     document.getElementById("paneltitle").textContent = 'Nationnality'
   )
@@ -215,22 +215,114 @@ function PickClub(club_id){
   .then(res=>res.json())
   .then(data =>{
     if(data.length>0){
-      setTimeout(() => {
-      }, 2000);
       document.getElementById("txtclubpanel").value = data[0]?.club_name ;
-      document.getElementById("updateimgclub").setAttribute('src' , data[0]?.club_img );
-      document.getElementById("panelformclub").classList.remove("hidden")
-   
+      document.getElementById("updateimgclub").setAttribute('src' , data[0]?.club_img.replace(/amp;/g,"") );
+      //document.getElementById("panelformclub").classList.remove("hidden")
+      ClubSelectedObject = data[0] ;
+      console.log({club_img : data[0]?.club_img.replace(/amp;/g,"")} )
     }
-      console.log(data);
   })
 }
 function ClosePanelClub(e){
   e.preventDefault();
   document.getElementById('panelclub').classList.add('hidden');
+  ClubSelectedObject = null;
+  document.getElementById('updateimgclub').setAttribute('src', '');
+
 }
 function PickNationnality(nationality_id){
   alert("dsvdsv"+nationality_id)
+}
+
+function UpdateClub(e){
+  e.preventDefault();
+  document.getElementById('btnUpdateClub').classList.remove('cursor-no-drop');
+
+  if(ClubSelectedObject != null && document.getElementById("txtclubpanel").value != "" ){
+    let parametres = new URLSearchParams({
+      id : ClubSelectedObject.club_id,
+      name : document.getElementById("txtclubpanel")?.value ,
+      img : ClubSelectedObject.club_img
+    })
+    console.log(ClubSelectedObject)
+    if(ImageClubSelected==null){
+      fetch(`http://localhost:8582/editclub?${parametres}`,{
+        method : 'PUT'
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        console.log(
+          data
+        )
+        location.reload();
+      })
+    }else{
+      document.getElementById('btnUpdateClub').innerHTML =  `
+      
+       <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+      </svg>
+      ` ;
+      UploadImgClubAminBB(ImageClubSelected)
+    }
+    
+  
+  }else{
+    document.getElementById('btnUpdateClub').classList.add('cursor-no-drop');
+  }
+  ;
+}
+
+async function UploadImgClubAminBB(imageFile){
+ 
+ const base64Image = await fileToBase64(imageFile);
+  const apiKey = "5KTx8W74";
+  const formData = new FormData();
+  formData.append("key", apiKey);
+  formData.append("imgbase64", base64Image);
+  try {
+      const response = await fetch(`https://aminebb.controlesad.com/api/upload`, {
+          method: "POST",
+          body: formData,
+      });
+
+      if (!response.ok) {
+          throw new Error("Failed to upload image");
+      }
+
+      const data = await response.json();
+      console.log(data);
+      
+      let parametres = new URLSearchParams({
+        id : ClubSelectedObject.club_id,
+        name : document.getElementById("txtclubpanel")?.value ,
+        img : data.url
+      })
+      fetch(`http://localhost:8582/editclub?${parametres}`,{
+        method : 'PUT'
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        console.log(
+          data
+        )
+        document.getElementById('btnUpdateClub').classList.remove('bg-blue-500');
+        document.getElementById('btnUpdateClub').classList.add('bg-green-500');
+        document.getElementById('btnUpdateClub').innerHTML =  `
+                <i class="fa-solid fa-check text-white"></i>
+        `;
+        setTimeout(() => {
+          document.getElementById('panelclub').classList.add('hidden');
+          ClubSelectedObject = null;
+          location.reload();
+        }, 200);
+      })
+ 
+  } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+  }
 }
 // <<<<<<< HEAD
 // const rangeInput = document.getElementById("RangePlayerRating");
@@ -338,6 +430,21 @@ input.forEach((input)=>{
     }
 });
 })
+
+const inputClub = document.querySelectorAll("#fileInputClub");
+inputClub.forEach((input) => {
+  input.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      let fileReader = new FileReader();
+      fileReader.onload = () => {
+        document.getElementById('updateimgclub').setAttribute('src', fileReader.result);
+      };
+      fileReader.readAsDataURL(file);
+      ImageClubSelected = file; 
+    }
+  });
+});
 
 
 async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other like 1 in update */){
