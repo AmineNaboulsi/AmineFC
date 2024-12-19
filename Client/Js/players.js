@@ -1,6 +1,8 @@
 let AllPlayersLis = []
 let IdCArdPlaterSelected = -1 ;
 let TargetINdexPanel = localStorage.getItem('TabLayout') ? localStorage.getItem('TabLayout')   :  1 ;
+ChangeTabLayoutPosition_Reload(TargetINdexPanel);
+
 let ClubSelectedObject = null ;
 let ImageClubSelected = null ;
 function Display_All_Players(){
@@ -26,6 +28,52 @@ function Display_All_Players(){
       }, 500);
     })
 }
+
+function AddClub_or_Nationnality(e) {
+  e.preventDefault();
+
+  UploadImgClubNationalityAminBB(ImageClubSelected);
+}
+async function UploadImgClubNationalityAminBB(imageFile){
+ 
+  const base64Image = await fileToBase64(imageFile);
+   const apiKey = "5KTx8W74";
+   const formData = new FormData();
+   formData.append("key", apiKey);
+   formData.append("imgbase64", base64Image);
+   try {
+       const response = await fetch(`https://aminebb.controlesad.com/api/upload`, {
+           method: "POST",
+           body: formData,
+       });
+ 
+       if (!response.ok) {
+           throw new Error("Failed to upload image");
+       }
+ 
+       const data = await response.json();
+       console.log(data);
+       routeaction = '';
+       if(TargetINdexPanel==2) routeaction = 'addclub';
+       else if(TargetINdexPanel==3) routeaction = 'addnationnality';
+       let parametres = new URLSearchParams({
+          name : document.getElementById("txtclubpanel")?.value ,
+         photo : data.url
+       })
+       fetch(`http://localhost:8582/${routeaction}`,{
+        method : 'POST',
+        body : parametres
+      })
+      .then(res=>res.json())
+      .then(data=> {
+        alert(data && data.message)
+      })
+  
+   } catch (error) {
+       console.error("Error uploading image:", error);
+       throw error;
+   }
+ }
 
 function AddPlaperPanel(data , pos){
     let PlayerCards = ``;
@@ -186,7 +234,7 @@ function PanelMoveTo(pos){
     document.getElementById("scrollbar").classList.remove('left-[60%]'),
     document.getElementById("scrollbar").classList.remove('w-24'),
     document.getElementById("scrollbar").classList.add('w-16'),
-    document.getElementById("paneltitle").textContent = 'Players'
+    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-user-plus text-xl text-white"></i>`
   )
   pos==2 && (
     document.getElementById("scrollbar").classList.remove('left-0'),
@@ -194,7 +242,10 @@ function PanelMoveTo(pos){
     document.getElementById("scrollbar").classList.remove('left-[60%]'),
     document.getElementById("scrollbar").classList.remove('w-24'),
     document.getElementById("scrollbar").classList.add('w-16'),
-    document.getElementById("paneltitle").textContent = 'Clubs'
+    document.getElementById("paneltitle").textContent = 'Clubs',
+    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-flag text-xl text-white"></i>`,
+    document.getElementById('floatingbutton').classList.remove('hidden'),
+    closepanel()
   )
   pos==3 && (
     document.getElementById("scrollbar").classList.remove('left-0'),
@@ -202,15 +253,52 @@ function PanelMoveTo(pos){
     document.getElementById("scrollbar").classList.add('left-[60%]'),
     document.getElementById("scrollbar").classList.add('w-24'),
     document.getElementById("scrollbar").classList.remove('w-16'),
-    document.getElementById("paneltitle").textContent = 'Nationnality'
+    document.getElementById("paneltitle").textContent = 'Nationnality',
+    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-flag text-xl text-white"></i>`,
+    document.getElementById('floatingbutton').classList.remove('hidden'),
+    closepanel()
   )
   TargetINdexPanel = pos;
   Display_All_Players()
+  ClosePopupClub_Nationality();
+  
 }
 Display_All_Players(false);
+function ChangeTabLayoutPosition_Reload(TargetINdexPanel){
+  TargetINdexPanel==1 && (
+    document.getElementById("scrollbar").classList.add('left-0'),
+    document.getElementById("scrollbar").classList.remove('left-[30%]'),
+    document.getElementById("scrollbar").classList.remove('left-[60%]'),
+    document.getElementById("scrollbar").classList.remove('w-24'),
+    document.getElementById("scrollbar").classList.add('w-16'),
+    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-user-plus text-xl text-white"></i>`
+  )
+  TargetINdexPanel==2 && (
+    document.getElementById("scrollbar").classList.remove('left-0'),
+    document.getElementById("scrollbar").classList.add('left-[30%]'),
+    document.getElementById("scrollbar").classList.remove('left-[60%]'),
+    document.getElementById("scrollbar").classList.remove('w-24'),
+    document.getElementById("scrollbar").classList.add('w-16'),
+    document.getElementById("paneltitle").textContent = 'Clubs',
+    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-flag text-xl text-white"></i>`
+  )
+  TargetINdexPanel==3 && (
+    document.getElementById("scrollbar").classList.remove('left-0'),
+    document.getElementById("scrollbar").classList.remove('left-[30%]'),
+    document.getElementById("scrollbar").classList.add('left-[60%]'),
+    document.getElementById("scrollbar").classList.add('w-24'),
+    document.getElementById("scrollbar").classList.remove('w-16'),
+    document.getElementById("paneltitle").textContent = 'Nationnality',
+    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-flag text-xl text-white"></i>`
 
+  )
+}
 function PickClub(club_id){
+  document.getElementById('floatingbutton').classList.add('hidden');
   document.getElementById('panelclub').classList.remove('hidden');
+
+  document.getElementById('AddMode').classList.add('hidden');
+  document.getElementById('EditMode').classList.remove('hidden');
   fetch('http://localhost:8582/clubs?id='+club_id)
   .then(res=>res.json())
   .then(data =>{
@@ -223,15 +311,38 @@ function PickClub(club_id){
     }
   })
 }
+function OpnePanelFormClubNationality(){
+  document.getElementById('panelclub').classList.remove('hidden');
+}
 function ClosePanelClub(e){
   e.preventDefault();
+  ClosePopupClub_Nationality();
+  document.getElementById('floatingbutton').classList.remove('hidden')
+}
+function ClosePopupClub_Nationality(){
   document.getElementById('panelclub').classList.add('hidden');
   ClubSelectedObject = null;
   document.getElementById('updateimgclub').setAttribute('src', '');
 
 }
 function PickNationnality(nationality_id){
-  alert("dsvdsv"+nationality_id)
+  document.getElementById('panelclub').classList.remove('hidden');
+  document.getElementById('floatingbutton').classList.add('hidden');
+  
+  document.getElementById('AddMode').classList.add('hidden');
+  document.getElementById('EditMode').classList.remove('hidden');
+
+  fetch('http://localhost:8582/nationnalitys?id='+nationality_id)
+  .then(res=>res.json())
+  .then(data =>{
+    if(data.length>0){
+      document.getElementById("txtclubpanel").value = data[0]?.nationality_name ;
+      document.getElementById("updateimgclub").setAttribute('src' , data[0]?.nationality_img.replace(/amp;/g,"") );
+      //document.getElementById("panelformclub").classList.remove("hidden")
+      ClubSelectedObject = data[0] ;
+      console.log({club_img : data[0]?.nationality_img.replace(/amp;/g,"")} )
+    }
+  })
 }
 
 function UpdateClub(e){
@@ -758,7 +869,23 @@ if (checkfiledrequied(PlayerData , 1)) {
 function ClosePopPUPFormulaire(e){
   e.preventDefault();
   closepanel();
+  document.getElementById('floatingbutton').classList.remove('hidden');
+
 }
+
+
+function OpenPanelCategorie(){
+
+  document.getElementById('AddMode').classList.remove('hidden');
+  document.getElementById('EditMode').classList.add('hidden');
+
+  if(TargetINdexPanel==1) OpenFormPanel(1 ,-1);
+  else if(TargetINdexPanel==2) OpnePanelFormClubNationality()
+  else if(TargetINdexPanel==3) OpnePanelFormClubNationality()
+  
+  document.getElementById('floatingbutton').classList.add('hidden');
+}
+
 function closepanel(){
   document.getElementById("FormPanel").classList.remove('grid-cols-[1fr,600px]')
   document.getElementById("FormPanelEdit").classList.add('w-[0px]')

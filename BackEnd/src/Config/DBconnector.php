@@ -1,7 +1,7 @@
 <?php  
 
-use Dotenv\Dotenv;
 require __DIR__ . '../../../vendor/autoload.php';
+use Dotenv\Dotenv;
 
 class DBconnector {
     private $host ;
@@ -12,7 +12,7 @@ class DBconnector {
 
     public $conn;
     public function  __construct(){
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+        $dotenv = Dotenv::createImmutable(__DIR__ . '../../../');
         $dotenv->load();
         $this->host=$_ENV['HOST'];
         $this->username = $_ENV['USERNAME'] ;

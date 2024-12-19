@@ -22,12 +22,12 @@ class MainRouter{
                 'PUT' => [
                     '/editplayers' => [PlayerController::class , 'EditPLayers'],
                     '/editclub' => [ClubController::class , 'EditClub'],
-                    '/editnationnality' => [NationnalityController::class , ''],
+                    '/editnationnality' => [NationnalityController::class , 'EditNationnality'],
                 ],
                 'DELETE' => [
                     '/delplayers' => [PlayerController::class , 'DeletePLayers'],
-                    '/delclub' => [ClubController::class , ''],
-                    '/delnationnality' => [NationnalityController::class , ''],
+                    '/delclub' => [ClubController::class , 'DelClub'],
+                    '/delnationnality' => [NationnalityController::class , 'DelNationnality'],
                 ]
             ];
         

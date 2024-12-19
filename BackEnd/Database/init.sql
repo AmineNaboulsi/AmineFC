@@ -25,10 +25,18 @@ CREATE TABLE `Player` (
   `physical` INT,
   `nationality_id` INT,
   `club_id` INT,
-   FOREIGN KEY (nationality_id) REFERENCES nationality(nationality_id) on DELETE CASCADE,
-   FOREIGN KEY (club_id) REFERENCES club(club_id) on DELETE CASCADE,
+   FOREIGN KEY (nationality_id) REFERENCES nationality(nationality_id) ,
+   FOREIGN KEY (club_id) REFERENCES club(club_id) ,
 );
 
+SELECT CONSTRAINT_NAME
+FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+WHERE TABLE_NAME = 'Player'
+
+alter table Player add constraint Player_ibfk_nationnality
+FOREIGN KEY (nationality_id) REFERENCES nationality(nationality_id) on update CASCADE on DELETE SET NULL;
+alter table Player add constraint Player_ibfk_club
+FOREIGN KEY (club_id) REFERENCES club(club_id) on update CASCADE  on DELETE SET NULL ; 
 
 
 
@@ -42,6 +50,5 @@ BEGIN
 END;
 
 
-Update  club 
-        SET club_name = ? , club_img = ? 
-        WHERE club_id = ?
+
+CALL GetNationalitys(2)

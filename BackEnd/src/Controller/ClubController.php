@@ -7,7 +7,7 @@ class ClubController {
         $this->DBconnector = new DBconnector();  
     }
     public function InsertClub(){
-        if(isset($_GET['name']) && isset($_GET['photo']) ){
+        if(isset($_POST['name']) && isset($_POST['photo']) ){
             $this->DBconnector->OpenConnection();
             if (!$this->DBconnector->CheckConnection()) {
                 return ['status' => false, 'message' => 'Database connection failed'];
@@ -23,7 +23,7 @@ class ClubController {
             }
     
             $stmt->bind_param('ss' , 
-            $_GET['name'] , $_GET['photo']);
+            $_POST['name'] , $_POST['photo']);
     
             if (!$stmt->execute()) {
                 return ['status' => false, 'message' => 'Error : ' . $stmt->error];
@@ -97,17 +97,29 @@ class ClubController {
     public function DelClub(){
         if(isset($_GET['id']))
         {
-            $query = 'DELETE FROM club WHERE club_id = ?' ;
             $this->DBconnector->OpenConnection();
-            $SQLDATAREADER = $this->DBconnector->conn->prepare($query);
-            
-            if(!$SQLDATAREADER->execute()){
-                return [
-                    "status" => false ,
-                    "message"=> "Error "
-                ];
+            if (!$this->DBconnector->CheckConnection()) {
+                return ['status' => false, 'message' => 'Database connection failed'];
             }
-
+            $stmt = $this->DBconnector->conn->prepare("
+                DELETE FROM club WHERE club_id = ?
+            ");
+        
+            if (!$stmt) {
+                return ['status' => false, 'message' => 'Error preparing statement: ' . $this->DBconnector->conn->error];
+            }
+    
+            $stmt->bind_param('i' , 
+            $_GET['id']);
+    
+            if (!$stmt->execute()) {
+                return ['status' => false, 'message' => 'Error : ' . $stmt->error];
+            }
+            $this->DBconnector->CloseConnection();
+            
+            return ['status' => true, 'message' => 'Club Deleted successfully'];
+            }else{
+            return ['status' => false, 'message' => 'Missing parametres'];
 
         }
     }

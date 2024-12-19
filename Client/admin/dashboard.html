@@ -33,7 +33,7 @@
             <form action="" method="get">
                 <div class="grid gap-2">
                     <div id="" class="relative border-[1px] max-xl:border-white border-dashed rounded-md flex flex-col justify-center items-center">
-                        <img id="updateimgclub" src="" alt="" class="h-24">
+                        <img id="updateimgclub" src="../Assets/icons8-image-100.png" alt="" class="h-20">
                         <div class="flex gap-2 items-center">
                             <span class="text-white">or</span>
                             <input class="my-2 text-gray-50 max-xl:text-white"
@@ -48,16 +48,24 @@
                         <h3>New Club Name</h3>
                         <input id="txtclubpanel" class="w-full px-2 py-1 bg-transparent border-[1px] border-gray-400 rounded-md" type="text" />
                     </div>
-                    <div class="grid grid-cols-2 gap-4 relative ">
-                        <button id="btnUpdateClub" type="submit" onclick="UpdateClub(event)" 
-                                 class="py-1 bg-blue-500" >
-                             <i class="fa-solid fa-rotate-right"></i>
-                            
+                    <div class="relative ">
+                        <div id="EditMode" class="hidden grid grid-cols-2 gap-4 ">
+                            <button id="btnUpdateClub"  type="submit" onclick="UpdateClub(event)" 
+                                     class="py-1 bg-blue-500" >
+                                 <i class="fa-solid fa-rotate-right"></i>
+                                
+                                </button>
+                            <button type="submit" onclick="" 
+                               class="py-1 bg-red-600" >
+                                  <i class="fa-solid fa-xmark"></i>
                             </button>
-                        <button type="submit" onclick="" 
-                           class="py-1 bg-red-600" >
-                              <i class="fa-solid fa-xmark"></i>
-                        </button>
+                        </div>
+                        <div id="AddMode" class="hidden">
+                            <button id="btnAddClub" type="submit" onclick="AddClub_or_Nationnality(event)" 
+                            class="py-1 bg-blue-500 w-full" >
+                                <i class="fa-solid fa-plus text-white"></i>
+                            </button>
+                        </div>
                         <div
                         class="absolute -bottom-16 left-[45%] right-0" >
                            <i onclick="ClosePanelClub(event)"   class="fa-solid fa-chevron-up p-3  bg-[#2D2C6D] rounded-[100%] "></i>
@@ -84,7 +92,10 @@
                     </div>  -->
                 </div>
 
-                <div id="FormPanel"  isOpned="false" class="grid h-[100%] w-full ">
+                <div id="FormPanel"  isOpned="false" class=" relative grid h-[100%] w-full ">
+                    <div onclick="OpenPanelCategorie()" id="floatingbutton" class="absolute flex justify-center items-center cursor-pointer right-10 bottom-16 transition-all hover:h-[70px] hover:w-[70px] h-[60px] w-[60px] shadow-[#2d2e2e51] shadow-lg z-[5] rounded-full bg-[#6158CA]">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
                     <div id="playerslist" class="flex flex-wrap h-[100%] ">
                         
                     </div>
