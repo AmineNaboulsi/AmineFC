@@ -22,6 +22,7 @@ function Display_All_Players(){
     })
     .then(res=>res.json())
     .then(data=> {
+      console.log(data)
       setTimeout(() => {
         AddPlaperPanel(data , TargetINdexPanel);
         AllPlayersLis = data;
@@ -31,8 +32,19 @@ function Display_All_Players(){
 
 function AddClub_or_Nationnality(e) {
   e.preventDefault();
+  document.getElementById('btnAddClub').innerHTML = `
+       <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+      </svg>
+      `;
+  const txt = document.getElementById("txtclubpanel")?.value ;
+  if(ImageClubSelected != null && txt != ""){
+    UploadImgClubNationalityAminBB(ImageClubSelected);
+  }else if(txt == ""){
 
-  UploadImgClubNationalityAminBB(ImageClubSelected);
+  }
+
 }
 async function UploadImgClubNationalityAminBB(imageFile){
  
@@ -66,7 +78,14 @@ async function UploadImgClubNationalityAminBB(imageFile){
       })
       .then(res=>res.json())
       .then(data=> {
-        alert(data && data.message)
+        console.log(data)
+
+        if(data.status){
+          document.getElementById('btnAddClub').innerHTML = `
+          <i class="fa-solid fa-plus text-white"></i>
+          `;
+        }
+        location.reload();
       })
   
    } catch (error) {
@@ -234,7 +253,9 @@ function PanelMoveTo(pos){
     document.getElementById("scrollbar").classList.remove('left-[60%]'),
     document.getElementById("scrollbar").classList.remove('w-24'),
     document.getElementById("scrollbar").classList.add('w-16'),
-    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-user-plus text-xl text-white"></i>`
+    document.getElementById("floatingbutton").innerHTML = `<i class="fa-solid fa-user-plus text-xl text-white"></i>`,
+    document.getElementById('floatingbutton').classList.remove('hidden'),
+    closepanel()
   )
   pos==2 && (
     document.getElementById("scrollbar").classList.remove('left-0'),
@@ -296,7 +317,7 @@ function ChangeTabLayoutPosition_Reload(TargetINdexPanel){
 function PickClub(club_id){
   document.getElementById('floatingbutton').classList.add('hidden');
   document.getElementById('panelclub').classList.remove('hidden');
-
+  
   document.getElementById('AddMode').classList.add('hidden');
   document.getElementById('EditMode').classList.remove('hidden');
   fetch('http://localhost:8582/clubs?id='+club_id)
@@ -348,22 +369,32 @@ function PickNationnality(nationality_id){
 function UpdateClub(e){
   e.preventDefault();
   document.getElementById('btnUpdateClub').classList.remove('cursor-no-drop');
-
+  let routeaction = '';
+  let urlimg = ''
+  let id 
+  TargetINdexPanel==2 && (routeaction = 'editclub' , 
+    urlimg = ClubSelectedObject?.club_img
+  )
+  TargetINdexPanel==3 && (routeaction = 'editnationnality' , 
+    urlimg = ClubSelectedObject?.nationality_img   )
   if(ClubSelectedObject != null && document.getElementById("txtclubpanel").value != "" ){
     let parametres = new URLSearchParams({
-      id : ClubSelectedObject.club_id,
+      id : ClubSelectedObject?.club_id  ?? ClubSelectedObject?.nationality_id,
       name : document.getElementById("txtclubpanel")?.value ,
-      img : ClubSelectedObject.club_img
+      img : urlimg
     })
     console.log(ClubSelectedObject)
     if(ImageClubSelected==null){
-      fetch(`http://localhost:8582/editclub?${parametres}`,{
+      fetch(`http://localhost:8582/${routeaction}?${parametres}`,{
         method : 'PUT'
       })
       .then(res=>res.json())
       .then(data=>{
-        console.log(
-          data
+        console.log({
+            url : `http://localhost:8582/${routeaction}?${parametres}` ,
+            data : data ,
+            parametres : parametres
+          }
         )
         location.reload();
       })
@@ -403,21 +434,20 @@ async function UploadImgClubAminBB(imageFile){
       }
 
       const data = await response.json();
-      console.log(data);
       
       let parametres = new URLSearchParams({
-        id : ClubSelectedObject.club_id,
+        id : TargetINdexPanel==2 ? ClubSelectedObject?.club_id : ClubSelectedObject?.nationality_id,
         name : document.getElementById("txtclubpanel")?.value ,
         img : data.url
       })
-      fetch(`http://localhost:8582/editclub?${parametres}`,{
+      let routeaction = '';
+      TargetINdexPanel==2 && (routeaction = 'editclub')
+      TargetINdexPanel==3 && (routeaction = 'editnationnality')
+      fetch(`http://localhost:8582/${routeaction}?${parametres}`,{
         method : 'PUT'
       })
       .then(res=>res.json())
       .then(data=>{
-        console.log(
-          data
-        )
         document.getElementById('btnUpdateClub').classList.remove('bg-blue-500');
         document.getElementById('btnUpdateClub').classList.add('bg-green-500');
         document.getElementById('btnUpdateClub').innerHTML =  `
@@ -477,6 +507,7 @@ function AddPlayer(event){
       position : document.getElementById("ComboplayerPosition")?.value ,
       nationality : document.getElementById("FlagComboName")?.textContent ,
       flag : document.getElementById("FlagComboImg")?.getAttribute('src') ,
+      flagid : document.getElementById("FlagComboName")?.getAttribute('data-id') ,
       club : document.getElementById("ClubComboName")?.getAttribute('data-id') ,
       clubname : document.getElementById("ClubComboName")?.textContent ,
       logo : document.getElementById("ClubComboImg")?.getAttribute('src') ,
@@ -493,12 +524,50 @@ function AddPlayer(event){
   } 
 }
 function DeletePlayer(event){
-  event.preventDefault();
-    AllPlayersLis = AllPlayersLis.filter((element) => element.id != IdCArdPlaterSelected ) 
+    event.preventDefault();
+    fetch(`http://localhost:8582/delplayers?id=${IdCArdPlaterSelected}`,{
+      method : 'DELETE'
+    })
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.status)
+      {
+        location.reload();
+      }
+    })
+    // AllPlayersLis = AllPlayersLis.filter((element) => element.id != IdCArdPlaterSelected ) 
     //localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
     Display_All_Players(true);
 }
 
+function DeleteNationnalityodclub(e){
+  e.preventDefault()
+  document.getElementById("alertdeleteprocess").classList.remove('hidden')
+}
+function DeleteAnywayNationnalityodclub(e){
+  e.preventDefault()
+  document.getElementById('delprogress').innerHTML = `
+  <svg aria-hidden="true" role="status" class="inline w-3 h-3 mb-1 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
+      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
+  </svg>`;
+  let routeaction =''
+  let id = 0
+  TargetINdexPanel==2 && (routeaction = 'delclub' , id = ClubSelectedObject?.club_id)
+  TargetINdexPanel==3 && (routeaction = 'delnationnality' , id = ClubSelectedObject?.nationality_id)
+  fetch(`http://localhost:8582/${routeaction}?id=${id}`,{
+     method : 'DELETE'
+  })
+   .then(res=>res.json())
+   .then(data=>{
+    if(data.status)
+    {
+       location.reload();
+       document.getElementById('delprogress').innerHTML = ``;
+       document.getElementById('delprogress').classList.add();
+    }
+  })
+}
 function checkfiledrequied(PlayerData , mode){
   let Findtrouble = false
   PlayerData.club==undefined ?
@@ -559,7 +628,6 @@ inputClub.forEach((input) => {
 
 
 async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other like 1 in update */){
-
   const apiKey = "5KTx8W74";
   //We have to make in the env file to make it more secure lmohim 9di o 3adi
 
@@ -602,7 +670,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
           formData.append('dribbling', PlayerData.dribbling);
           formData.append('defending', PlayerData.defending);
           formData.append('physical', PlayerData.physical);
-          formData.append('nationality_id', 1);
+          formData.append('nationality_id', PlayerData.flagid);
           formData.append('club_id', PlayerData.club);
           console.log({ club :  PlayerData.club})
           const apiResponse = await fetch(
@@ -619,7 +687,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
               throw new Error(`HTTP error! status: ${apiResponse.status}, message: ${errorText}`);
           }
           const data = apiResponse.json();
-          console.log(data);
+          location.reload()
           //AllPlayersLis.splice(0,0,PlayerData)
           Display_All_Players(false);
           //localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
@@ -637,7 +705,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
             dribbling: PlayerData.dribbling,
             defending: PlayerData.defending,
             physical: PlayerData.physical,
-            nationality_id: 1,
+            nationality_id:  PlayerData.flagid,
             club_id: PlayerData.club
          });
               const apiResponse = await fetch(
@@ -654,11 +722,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
           }
           const data = apiResponse.json();
           console.log(data);
-
-            //localStorage.setItem('ArrayPlayersData' , JSON.stringify(AllPlayersLis))
-        
-            Display_All_Players(true);
-            
+          location.reload()
         }
    
         document.getElementById("panleform").style.opacity = '1' ;
@@ -684,7 +748,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
         dribbling: PlayerData.dribbling,
         defending: PlayerData.defending,
         physical: PlayerData.physical,
-        nationality_id: 1,
+        nationality_id:  PlayerData.flagid,
         club_id: PlayerData.club
      });
 
@@ -722,6 +786,7 @@ function fileToBase64(file) {
 
 function OpenFormPanel(id , mode){
   document.getElementById("FormPanelEdit").classList.remove("hidden")
+  document.getElementById("floatingbutton").classList.add("hidden")
 
   if(document.getElementById("FormPanel").getAttribute('isopned') == 'true' && id !=0){
     document.getElementById("FormPanel").setAttribute('isopned','false')
@@ -820,12 +885,13 @@ function OpenFormPanel(id , mode){
     PlayerData.physical.value = playerPikced.physical
 
     const inputRange = ['Pace','Shooting','Passing','Defending','Dribbling','Physical'] 
-    document.getElementById(inputRange[0]+"Display").textContent = `${inputRange[0]} (${playerPikced?.rating}):`;
-    document.getElementById(inputRange[1]+"Display").textContent = `${playerPikced?.pace ?  inputRange[1] :'Diving'} (${playerPikced?.pace ?? playerPikced?.diving}):`;
-    document.getElementById(inputRange[2]+"Display").textContent = `${playerPikced?.shooting ? inputRange[2]:'Handling'} (${playerPikced?.shooting ?? playerPikced?.handling}):`;
-    document.getElementById(inputRange[3]+"Display").textContent = `${playerPikced?.dribbling ? inputRange[3]:'Kicking'} (${playerPikced?.dribbling ?? playerPikced?.kicking}):`;
-    document.getElementById(inputRange[4]+"Display").textContent = `${playerPikced?.defending ? inputRange[4]:'Reflexes'} (${playerPikced?.defending ?? playerPikced?.reflexes}):`;
+    // document.getElementById(inputRange[0]+"Display").textContent = `${inputRange[0]} (${playerPikced?.rating}):`;
+    document.getElementById(inputRange[0]+"Display").textContent = `${playerPikced?.pace ?  inputRange[0] :'Diving'} (${playerPikced?.pace ?? playerPikced?.diving}):`;
+    document.getElementById(inputRange[1]+"Display").textContent = `${playerPikced?.shooting ? inputRange[1]:'Handling'} (${playerPikced?.shooting ?? playerPikced?.handling}):`;
+    document.getElementById(inputRange[2]+"Display").textContent = `${playerPikced?.dribbling ? inputRange[2]:'Kicking'} (${playerPikced?.dribbling ?? playerPikced?.kicking}):`;
+    document.getElementById(inputRange[3]+"Display").textContent = `${playerPikced?.defending ? inputRange[3]:'Reflexes'} (${playerPikced?.defending ?? playerPikced?.reflexes}):`;
     document.getElementById(inputRange[4]+"Display").textContent = `${ playerPikced?.physical ? inputRange[4]:'Speed'} (${playerPikced?.physical ?? playerPikced?.speed}):`;
+    console.log({PlayerData : PlayerData})
   }
 }
  
@@ -843,6 +909,7 @@ function UpdatePlayer(e){
     position : document.getElementById("ComboplayerPosition")?.value ,
     nationality : document.getElementById("FlagComboName")?.textContent ,
     flag : document.getElementById("FlagComboImg")?.getAttribute('src') ,
+    flagid : document.getElementById("FlagComboName")?.getAttribute('data-id') ,
     club : document.getElementById("ClubComboName")?.getAttribute('data-id') ,
     clubname : document.getElementById("ClubComboName")?.textContent ,
     logo : document.getElementById("ClubComboImg")?.getAttribute('src') ,
@@ -914,6 +981,7 @@ function closepanel(){
       position : document.getElementById("ComboplayerPosition"),
       nationality : document.getElementById("FlagComboName") ,
       flag : document.getElementById("FlagComboImg")?.getAttribute('src') ,
+      flagid : document.getElementById("FlagComboImg")?.getAttribute('data-id')  ,
       club : document.getElementById("ClubComboName")?.getAttribute('data-id') ,
       clubname : document.getElementById("ClubComboName")?.textContent ,
       logo : document.getElementById("ClubComboImg")?.getAttribute('src') ,
@@ -947,19 +1015,19 @@ function closepanel(){
   
 }
 const FlagCombo = new TomSelect('#FlagCombo',{
-  valueField: 'name',
-  searchField: 'name',
+  valueField: 'nationality_name',
+  searchField: 'nationality_name',
   render: {
     option: function(item, escape) {
       return `<div class="custom-option grid grid-cols-[auto,1fr] gap-3 items-center">
-          <img  class="h-4 w-4" src="${item.img}" >
-          <span  >${item.name}</span>
+          <img  class="h-4 w-4" src="${item.nationality_img}" >
+          <span  >${item.nationality_name}</span>
         </div>`;
     },
     item: function(item, escape) {
       return `<div id="Flaginput" class="custom-option grid grid-cols-[auto,1fr] gap-3 items-center">
-          <img id="FlagComboImg" class="h-4 w-4" src="${item.img}" >
-          <span id="FlagComboName">${item.name}</span>
+          <img id="FlagComboImg" class="h-4 w-4" src="${item.nationality_img}" >
+          <span id="FlagComboName"  data-id="${item.nationality_id}">${item.nationality_name}</span>
         </div>`;
     }
   },
@@ -1004,7 +1072,7 @@ const CoverCombo = new TomSelect('#CoverCombo',{
 });
 
 
-fetch('../Data/nation.json')
+fetch('http://localhost:8582/nationnalitys')
 .then(response => response.json())
 .then(data => {
   FlagCombo.addOptions(data);

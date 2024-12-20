@@ -33,7 +33,7 @@ class NationnalityController{
         return $Data;
     }
     public function InsertNationnality(){
-        if(isset($_GET['name']) && isset($_GET['photo']) ){
+        if(isset($_POST['name']) && isset($_POST['photo']) ){
             $this->DBconnector->OpenConnection();
             if (!$this->DBconnector->CheckConnection()) {
                 return ['status' => false, 'message' => 'Database connection failed'];
@@ -49,7 +49,7 @@ class NationnalityController{
             }
     
             $stmt->bind_param('ss' , 
-            $_GET['name'] , $_GET['photo']);
+            $_POST['name'] , $_POST['photo']);
     
             if (!$stmt->execute()) {
                 return ['status' => false, 'message' => 'Error : ' . $stmt->error];
@@ -64,7 +64,7 @@ class NationnalityController{
        
     }
     public function EditNationnality(){
-        if(isset($_GET['name']) && isset($_GET['photo']) && isset($_GET['id']) ){
+        if(isset($_GET['name']) && isset($_GET['img']) && isset($_GET['id']) ){
             $this->DBconnector->OpenConnection();
             if (!$this->DBconnector->CheckConnection()) {
                 return ['status' => false, 'message' => 'Database connection failed'];
@@ -80,7 +80,7 @@ class NationnalityController{
             }
     
             $stmt->bind_param('ssi' , 
-            $_GET['name'] , $_GET['photo'] , $_GET['id']);
+            $_GET['name'] , $_GET['img'] , $_GET['id']);
     
             if (!$stmt->execute()) {
                 return ['status' => false, 'message' => 'Error : ' . $stmt->error];

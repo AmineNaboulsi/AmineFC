@@ -27,6 +27,11 @@ const formations = [
     ]
 ]
 
+
+function ModeAdmin(){
+    window.location.href = './admin/dashboard.html'
+}
+
 const Subplayer =[
 ]
 let formationPicked = 0;
@@ -154,7 +159,7 @@ function OpenFormationMenu(){
 }
 function PickPlayer(pn,isOnterain){
     
-    fetch('./Data/players.json')
+    fetch('http://localhost:8582/players')
     .then(res=>res.json())
     .then(data=> {
         // console.log(Array.from(formations[formationPicked][pn-1].post).slice(-2).join())
@@ -199,8 +204,8 @@ function AddPlaperPanel(data  , pn , post , isOnterain){
                       class="w-32" alt="">
                       
                       <div class="absolute left-[25px] top-[40px] flex flex-col items-center">
-                          <h2 class="m-0 p-0 font-bold text-ms"></h2>
-                          <span class="text-[8px] font-bold ${item.rating>85 && (item.position != "GK" &&'text-[#FFD972]')}">${item.position}</span>
+                          <h2 class="m-0 p-0 font-bold text-ms text-black ">${Math.floor((item.pace + item.shooting + item.physical + item.passing + item.defending + item.dribbling + item.dribbling)/7) }</h2>
+                          <span class="text-[8px] font-bold ${item.rating>85 && (item.position != "GK" &&'')}">${item.position}</span>
                           <img class="w-5 ${item.rating>85 &&(item.position != "GK" &&'text-[#FFD972]')}" src="${item.flag}"  alt="" />
                       </div>
                       <img class="absolute right-4 w-20 top-6" src="${item.photo}" alt="" />

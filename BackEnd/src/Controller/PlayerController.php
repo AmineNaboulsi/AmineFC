@@ -11,7 +11,7 @@ class PlayerController {
     public function GetPLayers(){
         $query = 'SELECT p.* , c.club_name as clubname , n.nationality_img flag , n.nationality_name nationality FROM Player p  
                 JOIN club c ON c.club_id = p.club_id
-                JOIN nationality n  ON n.nationality_id = n.nationality_id';
+                JOIN nationality n  ON p.nationality_id = n.nationality_id';
 
         $this->DBconnector->OpenConnection();
         $SQLDATAREADER = $this->DBconnector->conn->prepare($query);
@@ -138,7 +138,10 @@ class PlayerController {
             return ['status' => true, 'message' => 'PLayer Deleted successfully'];
     
         }else{
-
+            return [
+                "status" => false,
+                "message" => "Missing parameters: " 
+            ];
         }
        
     }

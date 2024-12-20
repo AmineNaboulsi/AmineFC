@@ -6,6 +6,31 @@ class ClubController {
     {
         $this->DBconnector = new DBconnector();  
     }
+
+    public function GetClubs(){
+        $query = 'SELECT * FROM club';
+        if(isset($_GET['id'])){
+            $query = 'SELECT * FROM club WHERE club_id = ?';
+        }
+        $this->DBconnector->OpenConnection();
+        if (!$this->DBconnector->CheckConnection()) {
+            return null; 
+        }
+        $stmt = $this->DBconnector->conn->prepare($query);
+        if(isset($_GET['id'])){
+            $stmt->bind_param('i' , 
+            $_GET['id']);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $Data = [] ;
+        while ($row = $result->fetch_assoc()) {
+            $Data[] = $row  ;
+        }
+        
+        $this->DBconnector->CloseConnection();
+        return $Data;
+    }
     public function InsertClub(){
         if(isset($_POST['name']) && isset($_POST['photo']) ){
             $this->DBconnector->OpenConnection();
@@ -36,30 +61,6 @@ class ClubController {
 
         }
        
-    }
-    public function GetClubs(){
-        $query = 'SELECT * FROM club';
-        if(isset($_GET['id'])){
-            $query = 'SELECT * FROM club WHERE club_id = ?';
-        }
-        $this->DBconnector->OpenConnection();
-        if (!$this->DBconnector->CheckConnection()) {
-            return null; 
-        }
-        $stmt = $this->DBconnector->conn->prepare($query);
-        if(isset($_GET['id'])){
-            $stmt->bind_param('i' , 
-            $_GET['id']);
-        }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $Data = [] ;
-        while ($row = $result->fetch_assoc()) {
-            $Data[] = $row  ;
-        }
-        
-        $this->DBconnector->CloseConnection();
-        return $Data;
     }
     public function EditClub(){
         $allpara = [

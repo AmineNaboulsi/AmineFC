@@ -1,5 +1,4 @@
 USE dbaminefc ;
-
 CREATE TABLE `nationality` (
   `nationality_id` INT PRIMARY KEY AUTO_INCREMENT,
   `nationality_name` VARCHAR(100) ,
@@ -51,4 +50,7 @@ END;
 
 
 
-CALL GetNationalitys(2)
+select count(*) from `Player`;
+SELECT count(*)  FROM Player p  
+                LEFT JOIN club c ON c.club_id = p.club_id
+                LEFT JOIN nationality n  ON n.nationality_id = n.nationality_id
