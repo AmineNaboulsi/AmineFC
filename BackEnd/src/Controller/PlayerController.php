@@ -63,7 +63,6 @@ class PlayerController {
             $_POST['dribbling'] , $_POST['defending'] , $_POST['physical'] ,
             $_POST['nationality_id'] , $_POST['club_id']
             );
-    
             if(!$SQLDATAREADER->execute()){
                 return [
                     "status" => false ,
