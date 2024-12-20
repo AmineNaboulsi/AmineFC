@@ -2,7 +2,7 @@ let AllPlayersLis = []
 let IdCArdPlaterSelected = -1 ;
 let TargetINdexPanel = localStorage.getItem('TabLayout') ? localStorage.getItem('TabLayout')   :  1 ;
 ChangeTabLayoutPosition_Reload(TargetINdexPanel);
-
+const API_URL = 'https://controlesad.com/apiv3/';
 let ClubSelectedObject = null ;
 let ImageClubSelected = null ;
 function Display_All_Players(){
@@ -16,8 +16,8 @@ function Display_All_Players(){
      <div class="px-3 py-1 h-5 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">loading...</div>
   </div>               
   `;
-  console.log(`http://localhost:8582/${routedata}`)
-    fetch(`http://localhost:8582/${routedata}`,{
+  console.log(`${API_URL}${routedata}`)
+    fetch(`${API_URL}${routedata}`,{
       method : 'GET'
     })
     .then(res=>res.json())
@@ -72,7 +72,7 @@ async function UploadImgClubNationalityAminBB(imageFile){
           name : document.getElementById("txtclubpanel")?.value ,
          photo : data.url
        })
-       fetch(`http://localhost:8582/${routeaction}`,{
+       fetch(`${API_URL}${routeaction}`,{
         method : 'POST',
         body : parametres
       })
@@ -320,7 +320,7 @@ function PickClub(club_id){
   
   document.getElementById('AddMode').classList.add('hidden');
   document.getElementById('EditMode').classList.remove('hidden');
-  fetch('http://localhost:8582/clubs?id='+club_id)
+  fetch(`${API_URL}clubs?id=`+club_id)
   .then(res=>res.json())
   .then(data =>{
     if(data.length>0){
@@ -353,7 +353,7 @@ function PickNationnality(nationality_id){
   document.getElementById('AddMode').classList.add('hidden');
   document.getElementById('EditMode').classList.remove('hidden');
 
-  fetch('http://localhost:8582/nationnalitys?id='+nationality_id)
+  fetch(`${API_URL}nationnalitys?id=`+nationality_id)
   .then(res=>res.json())
   .then(data =>{
     if(data.length>0){
@@ -385,13 +385,13 @@ function UpdateClub(e){
     })
     console.log(ClubSelectedObject)
     if(ImageClubSelected==null){
-      fetch(`http://localhost:8582/${routeaction}?${parametres}`,{
+      fetch(`${API_URL}${routeaction}?${parametres}`,{
         method : 'PUT'
       })
       .then(res=>res.json())
       .then(data=>{
         console.log({
-            url : `http://localhost:8582/${routeaction}?${parametres}` ,
+            url : `${API_URL}${routeaction}?${parametres}` ,
             data : data ,
             parametres : parametres
           }
@@ -443,7 +443,7 @@ async function UploadImgClubAminBB(imageFile){
       let routeaction = '';
       TargetINdexPanel==2 && (routeaction = 'editclub')
       TargetINdexPanel==3 && (routeaction = 'editnationnality')
-      fetch(`http://localhost:8582/${routeaction}?${parametres}`,{
+      fetch(`${API_URL}${routeaction}?${parametres}`,{
         method : 'PUT'
       })
       .then(res=>res.json())
@@ -525,7 +525,7 @@ function AddPlayer(event){
 }
 function DeletePlayer(event){
     event.preventDefault();
-    fetch(`http://localhost:8582/delplayers?id=${IdCArdPlaterSelected}`,{
+    fetch(`${API_URL}delplayers?id=${IdCArdPlaterSelected}`,{
       method : 'DELETE'
     })
     .then(res=>res.json())
@@ -555,7 +555,7 @@ function DeleteAnywayNationnalityodclub(e){
   let id = 0
   TargetINdexPanel==2 && (routeaction = 'delclub' , id = ClubSelectedObject?.club_id)
   TargetINdexPanel==3 && (routeaction = 'delnationnality' , id = ClubSelectedObject?.nationality_id)
-  fetch(`http://localhost:8582/${routeaction}?id=${id}`,{
+  fetch(`${API_URL}${routeaction}?id=${id}`,{
      method : 'DELETE'
   })
    .then(res=>res.json())
@@ -674,7 +674,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
           formData.append('club_id', PlayerData.club);
           console.log({ club :  PlayerData.club})
           const apiResponse = await fetch(
-              `http://localhost:8582/addplayers`,
+              `${API_URL}addplayers`,
               {
                   method: 'POST',
                   body: formData
@@ -709,7 +709,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
             club_id: PlayerData.club
          });
               const apiResponse = await fetch(
-                `http://localhost:8582/editplayers?${queryParams}`,
+                `${API_URL}editplayers?${queryParams}`,
                 {
                     method: 'PUT'
                 }
@@ -753,7 +753,7 @@ async function UploadImgOnImgBB(PlayerData , mode /* 0 in case add player other 
      });
 
           const apiResponse = await fetch(
-            `http://localhost:8582/editplayers?${queryParams}`,
+            `${API_URL}editplayers?${queryParams}`,
             {
                 method: 'PUT'
             }
@@ -1072,13 +1072,13 @@ const CoverCombo = new TomSelect('#CoverCombo',{
 });
 
 
-fetch('http://localhost:8582/nationnalitys')
+fetch(`${API_URL}nationnalitys`)
 .then(response => response.json())
 .then(data => {
   FlagCombo.addOptions(data);
 })
 
-fetch('http://localhost:8582/clubs')
+fetch(`${API_URL}clubs`)
 .then(response => response.json())
 .then(data => {
     ClubCombo.addOptions(data);

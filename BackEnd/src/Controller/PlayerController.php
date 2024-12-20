@@ -42,36 +42,42 @@ class PlayerController {
         $missingParams = array_filter($requiredParams, function($par) {
             return !isset($_POST[$par]);
         });
-        // print_r($missingParams);
+        // print_r($missingParams); 
         if (!empty($missingParams)) {
             return [
                 "status" => false,
                 "message" => "Missing parameters: " 
             ];
         }
-
-                $query = 'insert into Player 
-                (name , photo , cover , position, pace , shooting,
-                passing , dribbling , defending , physical , nationality_id , club_id)
-                VALUES 
-                (?,?,?,?,?,?,?,?,?,?,?,?);';
-                    $this->DBconnector->OpenConnection();
-                $SQLDATAREADER = $this->DBconnector->conn->prepare($query);
-                $SQLDATAREADER->bind_param('ssssiiiiiiii' ,
-                $_POST['name'] , $_POST['photo'] , $_POST['cover']  , $_POST['position'] ,
-                $_POST['pace'] , $_POST['shooting'] ,$_POST['passing'] ,
-                $_POST['dribbling'] , $_POST['defending'] , $_POST['physical'] ,
-                $_POST['nationality_id'] , $_POST['club_id']
-                );
-        
-                if(!$SQLDATAREADER->execute()){
-                    return [
-                        "status" => false ,
-                        "message" => "Error".$SQLDATAREADER->error
-                    ];
-                }
-                $this->DBconnector->CloseConnection();
-                return ['status' => true, 'message' => 'PLayer added successfully'];
+        try{
+            $query = 'insert into Player 
+            (name , photo , cover , position, pace , shooting,
+            passing , dribbling , defending , physical , nationality_id , club_id)
+            VALUES 
+            (?,?,?,?,?,?,?,?,?,?,?,?)';
+            $this->DBconnector->OpenConnection();
+            $SQLDATAREADER = $this->DBconnector->conn->prepare($query);
+            $SQLDATAREADER->bind_param('ssssiiiiiiii' ,
+            $_POST['name'] , $_POST['photo'] , $_POST['cover']  , $_POST['position'] ,
+            $_POST['pace'] , $_POST['shooting'] ,$_POST['passing'] ,
+            $_POST['dribbling'] , $_POST['defending'] , $_POST['physical'] ,
+            $_POST['nationality_id'] , $_POST['club_id']
+            );
+    
+            if(!$SQLDATAREADER->execute()){
+                return [
+                    "status" => false ,
+                    "message" => "Error".$SQLDATAREADER->error
+                ];
+            }
+            return ['status' => true, 'message' => 'PLayer added successfully'];
+        }catch(Exception $e){
+            return ['status' => false, 'message' => $e->getMessage()];
+        }
+        finally{
+            $this->DBconnector->CloseConnection();
+        }
+               
       
     }
     public function EditPLayers(){
