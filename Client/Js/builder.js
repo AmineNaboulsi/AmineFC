@@ -1,3 +1,5 @@
+const API_URL = 'https://controlesad.com/apiv3/';
+
 const formations = [
     [
         { pn : 1 , x: 0, y: 395 , post: 'GK' ,player : -1 },
@@ -159,7 +161,7 @@ function OpenFormationMenu(){
 }
 function PickPlayer(pn,isOnterain){
     
-    fetch('http://localhost:8582/players')
+    fetch(`${API_URL}players`)
     .then(res=>res.json())
     .then(data=> {
         // console.log(Array.from(formations[formationPicked][pn-1].post).slice(-2).join())
