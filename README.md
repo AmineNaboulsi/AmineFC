@@ -12,9 +12,9 @@ Welcome to the backend of the FUT Team Builder application. This backend is writ
 
 Clone the GitHub repository to your local machine:
 
-## git clone 
+
 ```
-https://github.com/your-username/fut-team-builder-backend.git
+git clone  https://github.com/your-username/fut-team-builder-backend.git
 ```
 
 ## Navigate to the project directory:
