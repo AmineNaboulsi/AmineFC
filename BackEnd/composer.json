@@ -1,5 +1,6 @@
 {
     "require": {
-        "vlucas/phpdotenv": "^5.6"
+        "_comment": "tu dois au moins laisser un .env.example file, si vous allez travailler avec quelqu'un sur le meme projet, vous devez avoir la meme format de .env",
+        "vlucas/phpdotenv": "^5.6" 
     }
 }
