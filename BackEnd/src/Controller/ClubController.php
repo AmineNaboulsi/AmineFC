@@ -4,7 +4,7 @@ class ClubController {
     private $DBconnector ;
     public function __construct()
     {
-        $this->DBconnector = new DBconnector();  
+        $this->DBconnector = new DBconnector();  // la prochaine fois utiliser singleton comme un design pattern pour declarer une seule instance pour la totalite de projet
     }
 
     public function GetClubs(){
@@ -13,7 +13,7 @@ class ClubController {
             $query = 'SELECT * FROM club WHERE club_id = ?';
         }
         $this->DBconnector->OpenConnection();
-        if (!$this->DBconnector->CheckConnection()) {
+        if (!$this->DBconnector->CheckConnection()) {// fait ca au debut ! avant meme créer la requete
             return null; 
         }
         $stmt = $this->DBconnector->conn->prepare($query);

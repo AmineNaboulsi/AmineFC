@@ -1,6 +1,6 @@
 <?php
 class Player{
-    public $id = "";
+    public $id = "";// ajouter les types : int, string... et laisser les proprietes private avec getters et setters
     public $name = "";
     public $photo = "";
     public $pace = 0;
@@ -15,7 +15,7 @@ class Player{
     public function __construct(
         $name,$photo,$pace,$shooting,$passing,
         $dribbling,$defending,$physical,$nationality_id,
-        $club_id)
+        $club_id)// si vous etes en train d'utiliser php 8 c'est mieux de faire direct __construct(private int $id, ... ca serai mieux 
     {
         $this->name = $name;
         $this->photo = $photo;

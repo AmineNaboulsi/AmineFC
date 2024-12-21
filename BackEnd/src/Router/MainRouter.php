@@ -32,7 +32,7 @@ class MainRouter{
             ];
         
     }
-    public function Dispatcher($method , $uri){
+    public function Dispatcher($method , $uri){ // les fonctions et les methodes dans PHP minuscule, les classes majuscule
         $route = strtok($uri, '?');
 
         if(isset($this->routes[$method][$route])){
