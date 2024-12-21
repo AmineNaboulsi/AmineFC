@@ -36,3 +36,27 @@ Import it into your MySQL database using phpMyAdmin or the command line:
 mysql -u database user -p database name < database/database.sql
 ```
 
+
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`HOST` `USERNAME` `PASSWORD` `DBNAME` `PORT`
+
+On 
+
+```
+src/
+├── public/index.php        # main file for displatch requests   
+├── src/
+│   ├── config/             # DIR Object Manage db connection
+│   ├── Models/             # All classes OBJECTS .
+│   ├── Router/             # All router api support
+│   ├── Cntroller/          # All CRUD db manipilation daat
+│   .env                	# Envirement variables for Database acces (dba) .
+│   composer.yaml      		# Docker compoer config file
+└── README.md               # Project documentation.
+```
+
+
+
