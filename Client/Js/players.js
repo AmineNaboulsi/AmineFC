@@ -884,17 +884,17 @@ function OpenFormPanel(id , mode){
     PlayerData.defending.value = playerPikced.defending
     PlayerData.physical.value = playerPikced.physical
 
-    const inputRange = ['Pace','Shooting','Passing','Defending','Dribbling','Physical'] 
+                                                                          const inputRange = ['Pace','Shooting','Defending','Passing','Dribbling','Physical'] 
     // document.getElementById(inputRange[0]+"Display").textContent = `${inputRange[0]} (${playerPikced?.rating}):`;
     document.getElementById(inputRange[0]+"Display").textContent = `${playerPikced?.pace ?  inputRange[0] :'Diving'} (${playerPikced?.pace ?? playerPikced?.diving}):`;
     document.getElementById(inputRange[1]+"Display").textContent = `${playerPikced?.shooting ? inputRange[1]:'Handling'} (${playerPikced?.shooting ?? playerPikced?.handling}):`;
-    document.getElementById(inputRange[2]+"Display").textContent = `${playerPikced?.dribbling ? inputRange[2]:'Kicking'} (${playerPikced?.dribbling ?? playerPikced?.kicking}):`;
-    document.getElementById(inputRange[3]+"Display").textContent = `${playerPikced?.defending ? inputRange[3]:'Reflexes'} (${playerPikced?.defending ?? playerPikced?.reflexes}):`;
-    document.getElementById(inputRange[4]+"Display").textContent = `${ playerPikced?.physical ? inputRange[4]:'Speed'} (${playerPikced?.physical ?? playerPikced?.speed}):`;
-    console.log({PlayerData : PlayerData})
+    document.getElementById(inputRange[2]+"Display").textContent = `${playerPikced?.defending ? inputRange[2]:'Reflexes'} (${playerPikced?.defending ?? playerPikced?.speed}):`;
+    document.getElementById(inputRange[3]+"Display").textContent = `${playerPikced?.dribbling ? inputRange[3]:'Kicking'} (${playerPikced?.passing ?? playerPikced?.kicking}):`;
+    document.getElementById(inputRange[4]+"Display").textContent = `${playerPikced?.dribbling ? inputRange[4]:'Reflexes'} (${playerPikced?.dribbling ?? playerPikced?.reflexes}):`;
+    document.getElementById(inputRange[5]+"Display").textContent = `${ playerPikced?.physical ? inputRange[5]:'Positioning'} (${playerPikced?.physical ?? playerPikced?.positioning}):`;
   }
 }
- 
+
 
 }
 
